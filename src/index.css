@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Popwale Design System - Premium P.O.P Services */
+
+@layer base {
+  :root {
+    /* Serene Color Palette - Inspired by hims.com */
+    --background: 42 15% 98%;
+    --foreground: 215 25% 15%;
+
+    /* Primary Brand Colors - Soft Teal */
+    --primary: 185 25% 45%;
+    --primary-foreground: 42 15% 98%;
+    --primary-light: 185 35% 85%;
+    --primary-muted: 185 15% 92%;
+
+    /* Secondary Colors - Warm Earth Tones */
+    --secondary: 35 25% 85%;
+    --secondary-foreground: 215 25% 15%;
+    --secondary-dark: 35 35% 65%;
+
+    /* Accent Colors - Soft Coral */
+    --accent: 15 35% 75%;
+    --accent-foreground: 215 25% 15%;
+    --accent-light: 15 25% 90%;
+
+    /* Neutral Tones */
+    --muted: 220 10% 95%;
+    --muted-foreground: 215 15% 55%;
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    /* Interactive Elements */
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 185 25% 45%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    /* Status Colors */
+    --destructive: 0 65% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Premium Design Tokens */
+    --gradient-primary: linear-gradient(135deg, hsl(185 25% 45%), hsl(185 35% 55%));
+    --gradient-hero: linear-gradient(135deg, hsl(185 25% 45%) 0%, hsl(35 25% 65%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 10% 98%) 100%);
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -2px hsl(185 25% 45% / 0.1);
+    --shadow-card: 0 8px 30px -4px hsl(185 25% 45% / 0.15);
+    --shadow-elegant: 0 20px 40px -8px hsl(185 25% 45% / 0.2);
+
+    /* Border Radius - Curved Design */
+    --radius-sm: 12px;
+    --radius: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    @apply bg-background text-foreground font-sans;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* Premium Button Variants */
+  .btn-hero {
+    @apply bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-8 py-4 rounded-[var(--radius-lg)] font-semibold shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-card)] transition-all duration-300 hover:scale-105;
+  }
+
+  .btn-hero-secondary {
+    @apply bg-white/10 text-white border-2 border-white/30 px-8 py-4 rounded-[var(--radius-lg)] font-semibold backdrop-blur-sm hover:bg-white/20 hover:border-white/50 transition-all duration-300 hover:scale-105 shadow-[var(--shadow-soft)];
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground border border-border px-6 py-3 rounded-[var(--radius)] font-medium hover:bg-secondary-dark transition-all duration-200;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-accent-foreground px-6 py-3 rounded-[var(--radius)] font-medium hover:bg-accent/80 transition-all duration-200;
+  }
+
+  /* Premium Card Variants */
+  .card-elegant {
+    @apply bg-gradient-to-br from-card to-muted border border-border rounded-[var(--radius-lg)] p-8 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-elegant)] transition-all duration-300;
+  }
+
+  .card-service {
+    @apply bg-card border border-border rounded-[var(--radius-xl)] p-6 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-card)] hover:scale-105 transition-all duration-300;
+  }
+
+  .card-gallery {
+    @apply bg-card rounded-[var(--radius-lg)] overflow-hidden shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-elegant)] transition-all duration-300;
+  }
+
+  /* Container Layouts */
+  .container-curved {
+    @apply max-w-7xl mx-auto px-6 sm:px-8 lg:px-12;
+  }
+
+  .section-padding {
+    @apply py-16 sm:py-20 lg:py-24;
+  }
+
+  /* Hero Gradients */
+  .hero-gradient {
+    background: var(--gradient-hero);
+  }
+
+  .primary-gradient {
+    background: var(--gradient-primary);
+  }
+
+  /* Smooth Animations */
+  .animate-fade-up {
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.8s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.4s ease-out forwards;
+  }
+}
+
+@layer utilities {
+  /* Custom Border Radius */
+  .rounded-curved {
+    border-radius: var(--radius-lg);
+  }
+
+  .rounded-curved-xl {
+    border-radius: var(--radius-xl);
+  }
+
+  /* Shadow Utilities */
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+
+  /* Gradient Text */
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Keyframes for Animations */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Sliding animation for clients carousel */
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
