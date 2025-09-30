@@ -26,35 +26,17 @@ const Navigation = () => {
   return (
     <>
       {/* Desktop Navigation */}
-      <div className="hidden lg:block fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+      <div className="hidden lg:flex fixed top-4 left-1/2 transform -translate-x-1/2 z-50 items-center gap-3">
         <NavHeader items={navItems} />
-      </div>
-
-      {/* Desktop Auth Button */}
-      <div className="hidden lg:block fixed top-4 right-4 z-50">
-        {user ? (
-          <div className="flex items-center gap-3 rounded-full bg-black/40 backdrop-blur-xl border border-white/30 p-2 shadow-elegant">
-            <Link to="/admin" className="flex items-center gap-2 px-3 hover:bg-white/10 rounded-full py-1 transition-colors">
-              <User className="w-4 h-4 text-white" />
-              <span className="text-white text-sm font-medium">Admin Panel</span>
-            </Link>
-            <Button
-              onClick={signOut}
-              size="sm"
-              variant="ghost"
-              className="rounded-full h-8 w-8 p-0 hover:bg-white/20 text-white"
-            >
-              <LogOut className="w-4 h-4" />
-            </Button>
-          </div>
-        ) : (
-          <Link to="/auth">
-            <Button className="rounded-full bg-gradient-primary hover:opacity-90 text-white px-6 py-2 font-medium shadow-elegant hover:scale-105 transition-all duration-200">
-              <User className="w-4 h-4 mr-2" />
-              Admin Login
-            </Button>
-          </Link>
-        )}
+        
+        {/* User Icon */}
+        <Link 
+          to={user ? "/admin" : "/auth"}
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 backdrop-blur-xl border border-white/30 shadow-elegant hover:bg-white/10 transition-all duration-200"
+          title={user ? "Admin Panel" : "Admin Login"}
+        >
+          <User className="w-4 h-4 text-white" />
+        </Link>
       </div>
 
       {/* Mobile Menu Button */}
