@@ -260,7 +260,7 @@ const Index = () => {
   return <>
       <Helmet>
         <title>Popwale - Expert P.O.P Services in Rajkot | #1 Ceiling Design Contractors Gujarat</title>
-        <meta name="description" content="Leading P.O.P services in Rajkot, Gujarat with 500+ projects completed. Expert ceiling design, gypsum installation, grid ceiling & decorative elements. ISO certified quality. Free consultation & quotes available." />
+        <meta name="description" content="Rajkot's #1 P.O.P ceiling contractors with 500+ projects. Expert gypsum, grid, stretch & soundproof installations. ISO certified, EMI available, free quotes in 24hrs. Transform your home or office with premium ceilings!" />
         <meta name="keywords" content="POP services Rajkot, ceiling design Rajkot, gypsum ceiling contractors Rajkot, false ceiling Rajkot, plaster of paris work Rajkot, interior design services Rajkot, ceiling installation Rajkot, P.O.P contractors Gujarat, decorative elements Rajkot, professional ceiling work Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/" />
 

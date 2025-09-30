@@ -50,7 +50,7 @@ const CeilingDesign = () => {
     <>
       <Helmet>
         <title>Ceiling Design & Installation Services in Rajkot | Expert P.O.P Contractors Gujarat</title>
-        <meta name="description" content="Professional ceiling design & installation services in Rajkot, Gujarat. Expert P.O.P contractors specializing in gypsum, grid, soundproof, PVC & stretch ceilings. 500+ projects completed across Rajkot." />
+        <meta name="description" content="Custom ceiling design Rajkot - 500+ unique projects. Specializing in gypsum, grid, stretch, soundproof & PVC ceilings. 3D previews, expert consultation, competitive pricing. Elevate your space aesthetically!" />
         <meta name="keywords" content="ceiling design Rajkot, ceiling installation Rajkot, P.O.P contractors Rajkot, false ceiling Rajkot, gypsum ceiling Rajkot, grid ceiling Rajkot, professional ceiling services Gujarat, interior design Rajkot, ceiling contractors Gujarat" />
         <link rel="canonical" href="https://www.popwale.in/services/ceiling-design" />
 

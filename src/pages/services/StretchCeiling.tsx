@@ -89,7 +89,7 @@ const StretchCeiling = () => {
     <>
       <Helmet>
         <title>Stretch Ceiling Installation Rajkot | Modern Ceiling Systems Gujarat | Custom Printed Ceilings</title>
-        <meta name="description" content="Professional stretch ceiling installation in Rajkot, Gujarat with custom prints and designs. Modern ceiling systems with quick installation. Waterproof, durable, and unlimited design options across Gujarat." />
+        <meta name="description" content="Stretch ceiling Rajkot from ₹180/sq.ft. Custom prints, 3D designs, translucent options. Waterproof, quick installation (300 sq.ft/day), 10-year warranty. Transform spaces with modern European-style ceilings!" />
         <meta name="keywords" content="stretch ceiling Rajkot, modern ceiling Rajkot, custom printed ceiling Gujarat, seamless ceiling Rajkot, quick installation ceiling Gujarat, designer ceiling Rajkot, membrane ceiling Gujarat, stretch ceiling contractors Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/services/stretch-ceiling" />
 

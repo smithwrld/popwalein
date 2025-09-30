@@ -49,7 +49,7 @@ const GypsumCeiling = () => {
     <>
       <Helmet>
         <title>Professional Gypsum Ceiling Installation Rajkot | Drywall & Plasterboard Services</title>
-        <meta name="description" content="Expert gypsum ceiling installation in Rajkot. Fire-resistant drywall and plasterboard ceilings with smooth finish. ISO certified contractors. Free quotes available." />
+        <meta name="description" content="Professional gypsum ceiling Rajkot from ₹150/sq.ft. Fire-resistant drywall & plasterboard installation. Smooth finish, 5-year warranty, 1-3 day installation. ISO certified. Get free quote for false ceiling today!" />
         <meta name="keywords" content="gypsum ceiling Rajkot, drywall ceiling Rajkot, plasterboard ceiling Rajkot, false ceiling Rajkot, gypsum board installation Rajkot, fire resistant ceiling Rajkot, smooth ceiling finish Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/services/gypsum-ceiling" />
 

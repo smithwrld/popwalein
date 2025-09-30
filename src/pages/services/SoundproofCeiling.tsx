@@ -72,7 +72,7 @@ const SoundproofCeiling = () => {
     <>
       <Helmet>
         <title>Soundproof Ceiling Installation Rajkot | Acoustic Ceiling Panels Gujarat | Noise Control Solutions</title>
-        <meta name="description" content="Professional soundproof ceiling installation in Rajkot, Gujarat. Acoustic panels and noise control solutions for studios, offices, and homes. Reduce noise by up to 60dB across Gujarat region." />
+        <meta name="description" content="Soundproof ceiling Rajkot - Reduce noise by 60dB! Acoustic panels for studios, offices & homes from ₹200/sq.ft. Professional installation, multiple materials available. Create peaceful spaces. Free consultation!" />
         <meta name="keywords" content="soundproof ceiling Rajkot, acoustic ceiling Rajkot, noise control Gujarat, sound insulation Rajkot, acoustic panels Gujarat, sound absorption Rajkot, recording studio ceiling Gujarat, quiet ceiling Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/services/soundproof-ceiling" />
 

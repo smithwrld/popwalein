@@ -5,7 +5,7 @@ const Privacy = () => {
     <>
       <Helmet>
         <title>Privacy Policy - Popwale | Your Privacy Matters</title>
-        <meta name="description" content="Read Popwale's privacy policy to understand how we collect, use, and protect your personal information." />
+        <meta name="description" content="Popwale Privacy Policy - Learn how we protect your personal information, handle data securely, and respect your privacy. Your trust matters. Transparent data practices for Rajkot customers." />
       </Helmet>
       
       <div className="min-h-screen bg-background">

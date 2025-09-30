@@ -329,7 +329,7 @@ const About = () => {
     <>
       <Helmet>
         <title>About Popwale - Leading P.O.P Contractors in Rajkot, Gujarat | 500+ Projects Completed</title>
-        <meta name="description" content="Discover Popwale's journey as Rajkot's premier P.O.P service provider. ISO 9001:2015 certified with 500+ completed projects across Gujarat. Expert ceiling design & installation in Rajkot since 2019." />
+        <meta name="description" content="Meet Rajkot's leading P.O.P contractors since 2019. ISO 9001:2015 certified team with 500+ projects completed. Award-winning ceiling design & installation serving Rajkot, Morbi, Jamnagar. Experience quality craftsmanship." />
         <meta name="keywords" content="about popwale Rajkot, POP contractors Rajkot Gujarat, interior design company Rajkot, certified P.O.P services Rajkot, ceiling specialists Rajkot, professional contractors Gujarat, ISO certified Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/about" />
 

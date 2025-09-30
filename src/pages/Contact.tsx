@@ -262,7 +262,7 @@ const Contact = () => {
   return <>
       <Helmet>
         <title>Contact Popwale - P.O.P Services in Rajkot | Get Free Quote & Expert Consultation</title>
-        <meta name="description" content="Contact Popwale for expert P.O.P services in Rajkot. Get free quotes, schedule site visits, and discuss your ceiling design projects. Serving Rajkot, Morbi, Jamnagar & surrounding areas." />
+        <meta name="description" content="Reach Popwale Rajkot for P.O.P ceiling services. Call +91-99090-94033 for free quotes & site visits. Available in Rajkot, Morbi, Jamnagar. 24-hour response time. Book your consultation now!" />
         <meta name="keywords" content="contact popwale Rajkot, POP services consultation Rajkot, free quote ceiling design Rajkot, site visit Rajkot, project discussion Rajkot, customer support Rajkot, interior design consultation Rajkot, P.O.P contractors contact Gujarat" />
         <link rel="canonical" href="https://popwale.in/contact" />
         

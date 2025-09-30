@@ -83,7 +83,7 @@ const PvcCeiling = () => {
     <>
       <Helmet>
         <title>PVC Ceiling Installation Rajkot | Waterproof Ceiling Panels Gujarat | Bathroom Ceiling Solutions</title>
-        <meta name="description" content="Professional PVC ceiling installation in Rajkot, Gujarat. Waterproof ceiling panels perfect for bathrooms, kitchens, and moisture-prone areas. Easy maintenance, durable, and quick installation across Gujarat." />
+        <meta name="description" content="PVC ceiling Rajkot from ₹60/sq.ft. 100% waterproof panels ideal for bathrooms & kitchens. Termite-proof, easy maintenance, quick installation. 10+ color options, 5-year warranty. Get instant quote now!" />
         <meta name="keywords" content="PVC ceiling Rajkot, waterproof ceiling Rajkot, bathroom ceiling Rajkot, kitchen ceiling Gujarat, moisture resistant ceiling Rajkot, plastic ceiling panels Gujarat, easy maintenance ceiling Rajkot, PVC contractors Gujarat" />
         <link rel="canonical" href="https://www.popwale.in/services/pvc-ceiling" />
 

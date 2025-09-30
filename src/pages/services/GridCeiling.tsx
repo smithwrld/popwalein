@@ -66,7 +66,7 @@ const GridCeiling = () => {
     <>
       <Helmet>
         <title>Grid Ceiling Installation Rajkot | Suspended Ceiling Systems Gujarat | Commercial Ceilings</title>
-        <meta name="description" content="Professional grid ceiling installation in Rajkot, Gujarat. Suspended drop ceiling systems perfect for offices and commercial spaces. Modular design with easy access panels. Expert contractors serving Rajkot & surrounding areas." />
+        <meta name="description" content="Grid ceiling installation Rajkot from ₹80/sq.ft. Suspended drop ceilings for offices & commercial spaces. Modular tiles, easy maintenance, fast installation. Acoustic options available. Free site visit & quote!" />
         <meta name="keywords" content="grid ceiling Rajkot, suspended ceiling Rajkot, drop ceiling Rajkot, office ceiling Rajkot, commercial ceiling Gujarat, modular ceiling Rajkot, acoustic ceiling tiles Rajkot, false ceiling grid Gujarat, ceiling contractors Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/services/grid-ceiling" />
 

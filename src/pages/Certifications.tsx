@@ -70,7 +70,7 @@ const Certifications = () => {
     <>
       <Helmet>
         <title>Professional Certifications & Awards | ISO Certified P.O.P Contractors Rajkot</title>
-        <meta name="description" content="View Popwale's professional certifications and industry awards. ISO 9001:2015 certified P.O.P contractors in Rajkot with excellence in craftsmanship recognition." />
+        <meta name="description" content="Popwale certifications: ISO 9001:2015 quality certified, industry awards & recognitions. Verified P.O.P contractors in Rajkot with proven excellence. Trust certified professionals for your ceiling project." />
         <meta name="keywords" content="ISO certified POP contractors Rajkot, professional certifications Rajkot, quality assurance Rajkot, industry awards Rajkot, certified craftsmen Rajkot, building certifications Gujarat" />
         <link rel="canonical" href="https://www.popwale.in/certifications" />
         

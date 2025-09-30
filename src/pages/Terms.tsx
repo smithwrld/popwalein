@@ -5,7 +5,7 @@ const Terms = () => {
     <>
       <Helmet>
         <title>Terms of Service - Popwale | Service Terms & Conditions</title>
-        <meta name="description" content="Read Popwale's terms of service to understand our service conditions, policies, and your rights as our customer." />
+        <meta name="description" content="Popwale Terms of Service - Understand our service agreements, warranty policies, payment terms, and customer rights. Clear, fair terms for all P.O.P ceiling projects in Rajkot." />
       </Helmet>
       
       <div className="min-h-screen bg-background">

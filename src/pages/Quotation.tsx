@@ -136,7 +136,7 @@ const Quotation = () => {
     <>
       <Helmet>
         <title>Get Free P.O.P Quote Rajkot | Ceiling Design Estimate | Popwale Quotation</title>
-        <meta name="description" content="Get free personalized P.O.P service quotes in Rajkot. Professional ceiling design estimates for gypsum, grid, soundproof & decorative ceilings. Quick response within 24 hours. EMI options available." />
+        <meta name="description" content="Request free P.O.P ceiling quotes in Rajkot. Instant estimates for gypsum, grid, soundproof & stretch ceilings. 24-hour response, site visit included. EMI available. Compare prices & save on your ceiling project!" />
         <meta name="keywords" content="free POP quote Rajkot, ceiling design estimate Rajkot, P.O.P quotation Rajkot, gypsum ceiling cost Rajkot, interior design quote Rajkot, project estimate Rajkot, ceiling installation cost, free consultation Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/quotation" />
 

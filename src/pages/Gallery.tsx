@@ -156,7 +156,7 @@ const Gallery = () => {
     <>
       <Helmet>
         <title>P.O.P Work Gallery Rajkot | Ceiling Design Portfolio | Popwale Projects</title>
-        <meta name="description" content="Explore Popwale's stunning P.O.P work gallery featuring 500+ completed projects in Rajkot. View our ceiling design portfolio, gypsum installations, and decorative elements. Get inspired for your next project." />
+        <meta name="description" content="Browse 500+ P.O.P ceiling designs in Rajkot's largest portfolio. View completed gypsum, grid, stretch & soundproof ceiling projects. Real installations from homes, offices & commercial spaces. Get design inspiration today!" />
         <meta name="keywords" content="POP work gallery Rajkot, ceiling design portfolio Rajkot, P.O.P projects Rajkot, gypsum ceiling photos Rajkot, interior design gallery Rajkot, completed projects Rajkot, ceiling installation photos, decorative elements gallery Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/gallery" />
 
