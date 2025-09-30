@@ -26,17 +26,12 @@ const Navigation = () => {
   return (
     <>
       {/* Desktop Navigation */}
-      <div className="hidden lg:flex fixed top-4 left-1/2 transform -translate-x-1/2 z-50 items-center gap-3">
-        <NavHeader items={navItems} />
-        
-        {/* User Icon */}
-        <Link 
-          to={user ? "/admin" : "/auth"}
-          className="flex items-center justify-center w-10 h-10 rounded-full bg-black/40 backdrop-blur-xl border border-white/30 shadow-elegant hover:bg-white/10 transition-all duration-200"
-          title={user ? "Admin Panel" : "Admin Login"}
-        >
-          <User className="w-4 h-4 text-white" />
-        </Link>
+      <div className="hidden lg:block fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+        <NavHeader 
+          items={navItems} 
+          showUserIcon={true}
+          userIconPath={user ? "/admin" : "/auth"}
+        />
       </div>
 
       {/* Mobile Menu Button */}

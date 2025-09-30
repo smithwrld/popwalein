@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { User } from "lucide-react";
 
 interface NavItem {
   name: string;
@@ -12,9 +13,11 @@ interface NavItem {
 
 interface NavHeaderProps {
   items: NavItem[];
+  showUserIcon?: boolean;
+  userIconPath?: string;
 }
 
-function NavHeader({ items }: NavHeaderProps) {
+function NavHeader({ items, showUserIcon = false, userIconPath = "/auth" }: NavHeaderProps) {
   const location = useLocation();
   const [position, setPosition] = useState({
     left: 0,
@@ -48,6 +51,18 @@ function NavHeader({ items }: NavHeaderProps) {
           {item.name}
         </Tab>
       ))}
+
+      {showUserIcon && (
+        <li className="relative z-10 block ml-2">
+          <Link
+            to={userIconPath}
+            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-all duration-200"
+            title="Admin Login"
+          >
+            <User className="w-4 h-4 text-white" />
+          </Link>
+        </li>
+      )}
 
       <Cursor position={position} />
     </ul>
