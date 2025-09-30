@@ -53,13 +53,13 @@ function NavHeader({ items, showUserIcon = false, userIconPath = "/auth" }: NavH
       ))}
 
       {showUserIcon && (
-        <li className="relative z-10 block ml-2">
+        <li className="relative z-10 block ml-1">
           <Link
             to={userIconPath}
-            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/10 transition-all duration-200"
+            className="flex items-center justify-center px-3 py-2 rounded-full hover:bg-white/25 transition-all duration-300 group"
             title="Admin Login"
           >
-            <User className="w-4 h-4 text-white" />
+            <User className="w-4 h-4 text-white group-hover:scale-110 transition-transform duration-200" />
           </Link>
         </li>
       )}
