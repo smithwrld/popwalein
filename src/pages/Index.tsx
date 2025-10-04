@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import HeroSlider from "@/components/HeroSlider";
 // Using uploaded stretch ceiling image instead
 import serviceDecorative from "@/assets/service-decorative.jpg";
+import popwaleLogo from "@/assets/popwale-logo.png";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import GyprocPartnership from "@/components/GyprocPartnership";
 import EMISection from "@/components/EMISection";
@@ -388,12 +389,21 @@ const Index = () => {
         <div className="container relative z-20 text-center max-w-4xl mx-auto px-6 pt-28 sm:pt-20">
 
           {/* Main Headline */}
-          <h1 className="font-elegant text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-tight text-white drop-shadow-2xl" style={{
-            textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
-          }}>
-            Popwale
-            
-          </h1>
+          <div className="flex items-center justify-center gap-4 sm:gap-6 mb-8">
+            <img 
+              src={popwaleLogo} 
+              alt="Popwale Logo" 
+              className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain drop-shadow-2xl"
+              style={{
+                filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))'
+              }}
+            />
+            <h1 className="font-elegant text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-white drop-shadow-2xl" style={{
+              textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
+            }}>
+              Popwale
+            </h1>
+          </div>
 
           {/* Subheadline */}
           <p className="text-xl sm:text-2xl text-white mb-10 max-w-3xl mx-auto leading-relaxed font-medium" style={{
