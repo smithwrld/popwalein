@@ -268,8 +268,189 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Additional Services */}
+      {/* Our Ceiling Solutions */}
       <section className="section-padding bg-muted">
+        <div className="container-curved">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
+              Our Ceiling Solutions
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Choose from our comprehensive range of ceiling types, each designed for specific needs and environments.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {/* Gypsum Ceiling */}
+            <div className="card-service group animate-fade-up">
+              <h3 className="text-xl font-bold text-foreground mb-3">Gypsum Ceiling</h3>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                Premium gypsum board ceilings with smooth finishes and modern aesthetics
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Fire resistant</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Sound insulation</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Smooth finish</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Easy installation</span>
+                </div>
+              </div>
+              <Link 
+                to="/services/gypsum-ceiling" 
+                className="inline-flex items-center gap-1 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200"
+              >
+                Learn More
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
+            </div>
+
+            {/* Grid Ceiling */}
+            <div className="card-service group animate-fade-up" style={{ animationDelay: '0.1s' }}>
+              <h3 className="text-xl font-bold text-foreground mb-3">Grid Ceiling</h3>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                Suspended grid ceiling systems perfect for commercial and office spaces
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Easy access</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Modular design</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Cost effective</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Professional look</span>
+                </div>
+              </div>
+              <Link 
+                to="/services/grid-ceiling" 
+                className="inline-flex items-center gap-1 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200"
+              >
+                Learn More
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
+            </div>
+
+            {/* Soundproof Ceiling */}
+            <div className="card-service group animate-fade-up" style={{ animationDelay: '0.2s' }}>
+              <h3 className="text-xl font-bold text-foreground mb-3">Soundproof Ceiling</h3>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                Acoustic ceiling solutions for superior sound insulation and noise control
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Noise reduction</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Acoustic panels</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Thermal insulation</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Custom designs</span>
+                </div>
+              </div>
+              <Link 
+                to="/services/soundproof-ceiling" 
+                className="inline-flex items-center gap-1 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200"
+              >
+                Learn More
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
+            </div>
+
+            {/* PVC Ceiling */}
+            <div className="card-service group animate-fade-up" style={{ animationDelay: '0.3s' }}>
+              <h3 className="text-xl font-bold text-foreground mb-3">PVC Ceiling</h3>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                Waterproof PVC ceiling panels ideal for bathrooms and moisture-prone areas
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Waterproof</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Easy maintenance</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Durable</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Variety of designs</span>
+                </div>
+              </div>
+              <Link 
+                to="/services/pvc-ceiling" 
+                className="inline-flex items-center gap-1 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200"
+              >
+                Learn More
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
+            </div>
+
+            {/* Stretch Ceiling */}
+            <div className="card-service group animate-fade-up" style={{ animationDelay: '0.4s' }}>
+              <h3 className="text-xl font-bold text-foreground mb-3">Stretch Ceiling</h3>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                Modern stretch ceiling systems with seamless installation and custom prints
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Seamless finish</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Custom prints</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Quick installation</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Modern aesthetics</span>
+                </div>
+              </div>
+              <Link 
+                to="/services/stretch-ceiling" 
+                className="inline-flex items-center gap-1 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200"
+              >
+                Learn More
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Additional Services */}
+      <section className="section-padding">
         <div className="container-curved">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
