@@ -17,7 +17,7 @@ const Services = () => {
         "LED integration solutions",
         "Sound insulation options"
       ],
-      pricing: "Starting from ₹150/sq.ft"
+      pricing: "Starting from ₹60/sq.ft"
     }
   ];
 
