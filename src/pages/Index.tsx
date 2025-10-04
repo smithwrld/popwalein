@@ -378,9 +378,7 @@ const Index = () => {
         
         {/* Logo positioned in hero section only */}
         <div className="absolute top-3 left-3 sm:top-4 sm:left-6 z-30">
-          <div className="bg-black/70 backdrop-blur-sm border border-primary/30 rounded-lg sm:rounded-xl p-1.5 sm:p-3 hover:bg-black/80 transition-all duration-300 shadow-lg">
-            <img src="/uploads/d945380b-ff77-456a-b9f6-8304efada3d1.png" alt="P.O.P Wale Logo" className="h-14 sm:h-20 md:h-24 lg:h-28 w-auto object-contain" />
-          </div>
+          
         </div>
         
         {/* Dark Overlay for Content Readability */}
