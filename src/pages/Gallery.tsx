@@ -230,7 +230,7 @@ const Gallery = () => {
               { number: `${images.length}+`, label: "Gallery Images" },
               { number: `${categories.length}+`, label: "Categories" },
               { number: `${subcategories.length}+`, label: "Subcategories" },
-              { number: "5+", label: "Years Experience" }
+              { number: "10+", label: "Years Experience" }
             ].map((stat, index) => (
               <div key={index} className="text-center animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
                 <div className="text-3xl sm:text-4xl font-bold text-gradient mb-2">
