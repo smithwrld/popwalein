@@ -21,14 +21,15 @@ const GyprocPartnership = ({ variant = "home", className = "" }: GyprocPartnersh
       <div className="container-curved relative z-10">
         <div className={`card-elegant ${isHome ? 'p-8' : 'p-6 md:p-8'} text-center`}>
           
-          {/* Partnership Logo */}
-          <div className="inline-flex items-center justify-center rounded-2xl p-4 mb-6">
-            <img 
-              src="/uploads/fdfdd7dd-5f7e-4fca-907e-c148b7204f91.png" 
-              alt="Gyproc by Saint-Gobain Logo" 
-              className="h-24 w-auto object-contain"
-            />
-          </div>
+{/* Partnership Logo */}
+<div className="inline-flex items-center justify-center rounded-2xl p-4 mb-6">
+  <img 
+    src="/uploads/fdfdd7dd-5f7e-4fca-907e-c148b7204f91.png" 
+    alt="Gyproc by Saint-Gobain Logo" 
+    className="h-36 w-auto object-contain"  // increased height from h-24 to h-36
+  />
+</div>
+
 
           {/* Main Content */}
           <div className="space-y-4">
