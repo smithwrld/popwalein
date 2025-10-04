@@ -1,15 +1,16 @@
 import { Building2, Shield, Award, Star } from "lucide-react";
+
 interface GyprocPartnershipProps {
   variant?: "home" | "about" | "contact";
   className?: string;
 }
-const GyprocPartnership = ({
-  variant = "home",
-  className = ""
-}: GyprocPartnershipProps) => {
+
+const GyprocPartnership = ({ variant = "home", className = "" }: GyprocPartnershipProps) => {
   const isHome = variant === "home";
   const isContact = variant === "contact";
-  return <section className={`relative overflow-hidden ${className}`}>
+  
+  return (
+    <section className={`relative overflow-hidden ${className}`}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-8 left-8 w-20 h-20 rounded-full bg-primary"></div>
@@ -21,8 +22,12 @@ const GyprocPartnership = ({
         <div className={`card-elegant ${isHome ? 'p-8' : 'p-6 md:p-8'} text-center`}>
           
           {/* Partnership Logo */}
-          <div className="inline-flex items-center justify-center p-4 mb-6 rounded-2xl">
-            <img src="/uploads/fdfdd7dd-5f7e-4fca-907e-c148b7204f91.png" alt="Gyproc by Saint-Gobain Logo" className="h-24 w-auto object-contain" />
+          <div className="inline-flex items-center justify-center rounded-2xl p-4 mb-6">
+            <img 
+              src="/uploads/fdfdd7dd-5f7e-4fca-907e-c148b7204f91.png" 
+              alt="Gyproc by Saint-Gobain Logo" 
+              className="h-24 w-auto object-contain"
+            />
           </div>
 
           {/* Main Content */}
@@ -71,15 +76,19 @@ const GyprocPartnership = ({
               </div>
             </div>
 
-            {!isContact && <div className="mt-8 pt-6 border-t border-border">
+            {!isContact && (
+              <div className="mt-8 pt-6 border-t border-border">
                 <p className="text-sm text-muted-foreground">
                   <span className="font-medium text-primary">Gyproc by Saint-Gobain</span> - 
                   Trusted by millions for designer false ceilings, drywalls, and innovative interior solutions
                 </p>
-              </div>}
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default GyprocPartnership;
