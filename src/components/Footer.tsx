@@ -104,7 +104,7 @@ const Footer = () => {
               <div className="text-primary-foreground/80 leading-relaxed">
                 <div className="font-medium">150 Feet Ring Rd</div>
                 <div className="text-sm">Near The Spire, Sheetal Park</div>
-                <div className="text-sm">Shastri Nagar, Dharam Nagar</div>
+                <div className="text-sm">Shastri Nagar,</div>
                 <div className="text-sm font-medium mt-1">
                   Rajkot, Gujarat <span className="text-accent-light">360007</span>
                 </div>
