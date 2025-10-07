@@ -213,7 +213,7 @@ const Services = () => {
         <div className="container-curved">
           <div className="max-w-4xl mx-auto text-center animate-fade-up">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
-              Our P.O.P Services in Rajkot
+              Our P.O.P Services
             </h1>
             <p className="text-xl sm:text-2xl text-primary-foreground/90 leading-relaxed">
               Comprehensive P.O.P solutions for residential and commercial spaces in Rajkot and Gujarat, 
@@ -268,15 +268,15 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Our Ceiling Solutions */}
       <section className="section-padding bg-muted">
+        {/* Our Ceiling Solutions */}
         <div className="container-curved">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
               Our Ceiling Solutions
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Choose from our comprehensive range of ceiling types, each designed for specific needs and environments.
+              Explore our complete range of ceiling solutions and decorative services, each crafted for specific needs and environments.
             </p>
           </div>
 
@@ -347,44 +347,11 @@ const Services = () => {
               </Link>
             </div>
 
-            {/* Soundproof Ceiling */}
-            <div className="card-service group animate-fade-up" style={{ animationDelay: '0.2s' }}>
-              <h3 className="text-xl font-bold text-foreground mb-3">Soundproof Ceiling</h3>
-              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                Acoustic ceiling solutions for superior sound insulation and noise control
-              </p>
-              <div className="space-y-3 mb-6">
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span className="text-sm text-muted-foreground">Noise reduction</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span className="text-sm text-muted-foreground">Acoustic panels</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span className="text-sm text-muted-foreground">Thermal insulation</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                  <span className="text-sm text-muted-foreground">Custom designs</span>
-                </div>
-              </div>
-              <Link 
-                to="/services/soundproof-ceiling" 
-                className="inline-flex items-center gap-1 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200"
-              >
-                Learn More
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-              </Link>
-            </div>
-
             {/* PVC Ceiling */}
             <div className="card-service group animate-fade-up" style={{ animationDelay: '0.3s' }}>
-              <h3 className="text-xl font-bold text-foreground mb-3">PVC Ceiling</h3>
+              <h3 className="text-xl font-bold text-foreground mb-3">Sofit Ceiling</h3>
               <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                Waterproof PVC ceiling panels ideal for bathrooms and moisture-prone areas
+                Waterproof Sofit ceiling panels ideal for bathrooms and moisture-prone areas
               </p>
               <div className="space-y-3 mb-6">
                 <div className="flex items-center space-x-3">
@@ -405,7 +372,7 @@ const Services = () => {
                 </div>
               </div>
               <Link 
-                to="/services/pvc-ceiling" 
+                to="/services/sofit-ceiling" 
                 className="inline-flex items-center gap-1 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200"
               >
                 Learn More
@@ -445,12 +412,45 @@ const Services = () => {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
               </Link>
             </div>
+
+            {/* Punning Work */}
+            <div className="card-service group animate-fade-up" style={{ animationDelay: '0.5s' }}>
+              <h3 className="text-xl font-bold text-foreground mb-3">Punning Work</h3>
+              <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
+                Intricate decorative plaster art that transforms spaces into masterpieces
+              </p>
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Custom artistry</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Intricate designs</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Premium quality</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                  <span className="text-sm text-muted-foreground">Expert craftsmanship</span>
+                </div>
+              </div>
+              <Link
+                to="/services/punning-work"
+                className="inline-flex items-center gap-1 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200"
+              >
+                Learn More
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Additional Services */}
       <section className="section-padding">
+        {/* Additional Services */}
         <div className="container-curved">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
@@ -575,7 +575,7 @@ const Services = () => {
         <div className="container-curved">
           <div className="card-elegant text-center max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Ready to Transform Your Space in Rajkot?
+              Ready to Transform Your Space?
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
               Contact Rajkot's leading P.O.P service provider today for a free consultation and personalized quote for your project.
@@ -597,3 +597,4 @@ const Services = () => {
 };
 
 export default Services;
+
