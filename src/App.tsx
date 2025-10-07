@@ -14,9 +14,9 @@ import Services from "./pages/Services";
 import CeilingDesign from "./pages/services/CeilingDesign";
 import GypsumCeiling from "./pages/services/GypsumCeiling";
 import GridCeiling from "./pages/services/GridCeiling";
-import SoundproofCeiling from "./pages/services/SoundproofCeiling";
-import PvcCeiling from "./pages/services/PvcCeiling";
+import SofitCeiling from "./pages/services/SofitCeiling";
 import StretchCeiling from "./pages/services/StretchCeiling";
+import PunningWork from "./pages/services/PunningWork";
 
 
 import Quotation from "./pages/Quotation";
@@ -55,9 +55,8 @@ const AppContent = () => {
               <Route path="/services/ceiling-design" element={<CeilingDesign />} />
               <Route path="/services/gypsum-ceiling" element={<GypsumCeiling />} />
               <Route path="/services/grid-ceiling" element={<GridCeiling />} />
-              <Route path="/services/soundproof-ceiling" element={<SoundproofCeiling />} />
-              <Route path="/services/pvc-ceiling" element={<PvcCeiling />} />
-              <Route path="/services/stretch-ceiling" element={<StretchCeiling />} />
+              <Route path="/services/sofit-ceiling" element={<SofitCeiling />} />
+              <Route path="/services/punning-work" element={<PunningWork />} />
               
               
               <Route path="/quotation" element={<Quotation />} />

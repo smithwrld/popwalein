@@ -389,15 +389,16 @@ const Index = () => {
         <div className="container relative z-20 text-center max-w-4xl mx-auto px-6 pt-28 sm:pt-20">
 
           {/* Main Headline */}
-          <div className="flex items-center justify-center gap-4 sm:gap-6 mb-8">
-            <img 
-              src={popwaleLogo} 
-              alt="Popwale Logo" 
-              className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain drop-shadow-2xl"
+          <div className="flex items-center justify-center gap-4 sm:gap-2 mb-6">
+            <img
+              src={popwaleLogo}
+              alt="Popwale Logo"
+              className="w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 object-contain drop-shadow-2xl translate-x-4"
               style={{
-                filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.8))'
+                filter: 'drop-shadow(2px 2px 6px rgba(0,0,0,0.8))',
               }}
             />
+
             <h1 className="font-elegant text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-white drop-shadow-2xl" style={{
               textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
             }}>
@@ -508,9 +509,9 @@ const Index = () => {
             <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">
               Our Clients
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Trusted by leading companies and prestigious projects across India
-            </p>
+            <p className="mt-4 text-center text-muted-foreground text-lg">
+          Hover over a logo to see more details
+        </p>
           </div>
           <ClientsCarousel />
         </div>

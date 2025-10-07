@@ -111,7 +111,7 @@ function ClientLogo({ client }: ClientLogoProps) {
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <div
-          className="group relative flex h-32 w-48 cursor-pointer items-center justify-center rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-primary/50 hover:bg-accent/50 hover:shadow-lg"
+          className="group relative flex h-40 w-56 cursor-pointer items-center justify-center rounded-2xl border border-border bg-card p-6 transition-all duration-300 hover:border-primary/50 hover:bg-accent/50 hover:shadow-lg"
           onMouseEnter={() => setIsOpen(true)}
           onMouseLeave={() => setIsOpen(false)}
         >
@@ -119,7 +119,7 @@ function ClientLogo({ client }: ClientLogoProps) {
             <img
               src={client.logo}
               alt={client.name}
-              className="h-full w-full object-contain filter grayscale transition-all duration-300 group-hover:grayscale-0"
+              className="h-full w-full object-contain transition-all duration-300"
             />
           ) : (
             <div className="text-3xl font-bold text-muted-foreground transition-colors duration-300 group-hover:text-primary">
@@ -152,18 +152,10 @@ interface ClientsCarouselProps {
 
 export default function ClientsCarousel({ className }: ClientsCarouselProps) {
   return (
-    <div className={cn("w-full py-16 bg-background", className)}>
-      <div className="container mx-auto mb-12 px-4">
-        <h2 className="text-center text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
-          Trusted by Industry Leaders
-        </h2>
-        <p className="mt-4 text-center text-muted-foreground text-lg">
-          Hover over a logo to see more details
-        </p>
-      </div>
+    <div className={cn("w-full py-16", className)}>
       
       <InfiniteSlider
-        duration={30}
+        duration={63}
         durationOnHover={100}
         gap={32}
         className="w-full"

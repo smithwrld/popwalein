@@ -18,15 +18,9 @@ const CeilingDesign = () => {
       features: ["Easy access", "Modular design", "Cost effective", "Professional look"]
     },
     {
-      name: "Soundproof Ceiling",
-      description: "Acoustic ceiling solutions for superior sound insulation and noise control",
-      link: "/services/soundproof-ceiling",
-      features: ["Noise reduction", "Acoustic panels", "Thermal insulation", "Custom designs"]
-    },
-    {
-      name: "PVC Ceiling",
-      description: "Waterproof PVC ceiling panels ideal for bathrooms and moisture-prone areas",
-      link: "/services/pvc-ceiling",
+      name: "Sofit Ceiling",
+      description: "Waterproof Sofit ceiling panels ideal for bathrooms and moisture-prone areas",
+      link: "/services/sofit-ceiling",
       features: ["Waterproof", "Easy maintenance", "Durable", "Variety of designs"]
     },
     {

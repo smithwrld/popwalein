@@ -15,7 +15,8 @@ const Footer = () => {
     label: "Contact Us",
     to: "/contact"
   }];
-  return <footer className="bg-primary text-primary-foreground">
+  return (
+    <footer className="bg-primary text-primary-foreground">
       <div className="container-curved section-padding">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Section */}
@@ -45,12 +46,14 @@ const Footer = () => {
             <h3 className="text-lg font-semibold">Quick Links</h3>
             <div className="space-y-3">
               {quickLinks.map(({
-              label,
-              to
-            }) => <Link key={label} to={to} className="flex items-center text-primary-foreground/80 hover:text-accent-light transition-colors group">
+                label,
+                to
+              }) => (
+                <Link key={label} to={to} className="flex items-center text-primary-foreground/80 hover:text-accent-light transition-colors group">
                   <ArrowRight className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform" />
                   {label}
-                </Link>)}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -67,11 +70,11 @@ const Footer = () => {
               <Link to="/services/stretch-ceiling" className="block text-primary-foreground/80 hover:text-accent-light transition-colors">
                 Stretch Ceiling Solutions
               </Link>
-              <Link to="/services/pvc-ceiling" className="block text-primary-foreground/80 hover:text-accent-light transition-colors">
-                PVC Ceiling Panels
+              <Link to="/services/sofit-ceiling" className="block text-primary-foreground/80 hover:text-accent-light transition-colors">
+                Sofit Ceiling Panels
               </Link>
-              <Link to="/services/soundproof-ceiling" className="block text-primary-foreground/80 hover:text-accent-light transition-colors">
-                Sound Proof Ceilings
+              <Link to="/services/punning-work" className="block text-primary-foreground/80 hover:text-accent-light transition-colors">
+                Punning Work
               </Link>
               <Link to="/services/ceiling-design" className="block text-primary-foreground/80 hover:text-accent-light transition-colors">
                 Custom P.O.P Work
@@ -83,33 +86,33 @@ const Footer = () => {
           <div className="space-y-6">
             <h3 className="text-lg font-semibold">Contact Info</h3>
             <div className="space-y-4">
-            <div className="flex items-start space-x-3">
-              <Phone className="w-5 h-5 text-accent-light flex-shrink-0 mt-0.5" />
-              <div className="text-primary-foreground/80">
-                <a href="tel:+919909094033" className="hover:text-accent-light transition-colors">
-                  +91 99090 94033
-                </a>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <Mail className="w-5 h-5 text-accent-light flex-shrink-0 mt-0.5" />
-              <div className="text-primary-foreground/80">
-                <a href="mailto:info@popwale.in" className="hover:text-accent-light transition-colors">
-                  info@popwale.in
-                </a>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3">
-              <MapPin className="w-5 h-5 text-accent-light flex-shrink-0 mt-0.5" />
-              <div className="text-primary-foreground/80 leading-relaxed">
-                <div className="font-medium">150 Feet Ring Rd</div>
-                <div className="text-sm">Near The Spire, Sheetal Park</div>
-                <div className="text-sm">Shastri Nagar,</div>
-                <div className="text-sm font-medium mt-1">
-                  Rajkot, Gujarat <span className="text-accent-light">360007</span>
+              <div className="flex items-start space-x-3">
+                <Phone className="w-5 h-5 text-accent-light flex-shrink-0 mt-0.5" />
+                <div className="text-primary-foreground/80">
+                  <a href="tel:+919909094033" className="hover:text-accent-light transition-colors">
+                    +91 99090 94033
+                  </a>
                 </div>
               </div>
-            </div>
+              <div className="flex items-start space-x-3">
+                <Mail className="w-5 h-5 text-accent-light flex-shrink-0 mt-0.5" />
+                <div className="text-primary-foreground/80">
+                  <a href="mailto:info@popwale.in" className="hover:text-accent-light transition-colors">
+                    info@popwale.in
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-start space-x-3">
+                <MapPin className="w-5 h-5 text-accent-light flex-shrink-0 mt-0.5" />
+                <div className="text-primary-foreground/80 leading-relaxed">
+                  <div className="font-medium">150 Feet Ring Rd</div>
+                  <div className="text-sm">Near The Spire, Sheetal Park</div>
+                  <div className="text-sm">Shastri Nagar,</div>
+                  <div className="text-sm font-medium mt-1">
+                    Rajkot, Gujarat <span className="text-accent-light">360007</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -134,6 +137,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
 export default Footer;
