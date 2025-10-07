@@ -71,7 +71,7 @@ const GypsumCeiling = () => {
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               <div className="animate-fade-up space-y-6 lg:space-y-8">
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
-                  Gypsum Ceiling Installation - Rajkot
+                  Gypsum Ceiling Installation
                 </h1>
                 <p className="text-lg sm:text-xl lg:text-2xl text-primary-foreground/90 leading-relaxed max-w-2xl">
                   Premium gypsum board ceilings (drywall/plasterboard) in Rajkot offering fire resistance, smooth finishes, and superior durability. Perfect for modern homes and commercial spaces across Gujarat.

@@ -4,32 +4,7 @@ import { Helmet } from "react-helmet-async";
 import gypsumCeilingImage from "@/assets/hero-gypsum-ceiling.jpg";
 
 const CeilingDesign = () => {
-  const ceilingTypes = [
-    {
-      name: "Gypsum Ceiling",
-      description: "Premium gypsum board ceilings with smooth finishes and modern aesthetics",
-      link: "/services/gypsum-ceiling",
-      features: ["Fire resistant", "Sound insulation", "Smooth finish", "Easy installation"]
-    },
-    {
-      name: "Grid Ceiling",
-      description: "Suspended grid ceiling systems perfect for commercial and office spaces",
-      link: "/services/grid-ceiling", 
-      features: ["Easy access", "Modular design", "Cost effective", "Professional look"]
-    },
-    {
-      name: "Sofit Ceiling",
-      description: "Waterproof Sofit ceiling panels ideal for bathrooms and moisture-prone areas",
-      link: "/services/sofit-ceiling",
-      features: ["Waterproof", "Easy maintenance", "Durable", "Variety of designs"]
-    },
-    {
-      name: "Stretch Ceiling",
-      description: "Modern stretch ceiling systems with seamless installation and custom prints",
-      link: "/services/stretch-ceiling",
-      features: ["Seamless finish", "Custom prints", "Quick installation", "Modern aesthetics"]
-    }
-  ];
+
 
   const benefits = [
     "Enhanced interior aesthetics",
@@ -202,53 +177,6 @@ const CeilingDesign = () => {
           </div>
         </section>
 
-        {/* Ceiling Types */}
-        <section className="py-12 sm:py-16 lg:py-20">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12 sm:mb-16">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 sm:mb-6">
-                Our Ceiling Solutions
-              </h2>
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-                Choose from our comprehensive range of ceiling types, each designed for specific needs and environments.
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              {ceilingTypes.map((type, index) => (
-                <Link 
-                  key={index}
-                  to={type.link}
-                  className="group bg-card border border-border rounded-[var(--radius-xl)] p-6 sm:p-8 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-elegant)] hover:scale-[1.02] transition-all duration-300 animate-fade-up block"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="space-y-4">
-                    <h3 className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-200">
-                      {type.name}
-                    </h3>
-                    <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
-                      {type.description}
-                    </p>
-                    
-                    <div className="space-y-2">
-                      {type.features.map((feature, idx) => (
-                        <div key={idx} className="flex items-center space-x-2 text-xs sm:text-sm">
-                          <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
-                          <span className="text-muted-foreground">{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="pt-4 flex items-center text-primary font-medium text-sm">
-                      Learn More
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* Benefits Section */}
         <section className="py-12 sm:py-16 lg:py-20 bg-muted">

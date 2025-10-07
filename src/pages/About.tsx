@@ -432,7 +432,7 @@ const About = () => {
               About Popwale - Rajkot's Premier P.O.P Specialists
             </h1>
             <p className="text-xl sm:text-2xl text-primary-foreground/90 leading-relaxed">
-              Crafting exceptional P.O.P services and ceiling designs across Rajkot and Gujarat with passion, 
+              Crafting exceptional P.O.P services and ceiling designs across Rajkot, Jamnagar, Morbi, Junagadh and Gujarat with passion, 
               precision, and unmatched expertise for over 5 years.
             </p>
           </div>

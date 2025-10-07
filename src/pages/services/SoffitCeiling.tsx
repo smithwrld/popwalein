@@ -2,7 +2,7 @@ import { ArrowRight, Star, CheckCircle, Droplets, Shield, Brush, Clock } from "l
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
-const SofitCeiling = () => {
+const SoffitCeiling = () => {
   const features = [
     {
       icon: Droplets,
@@ -26,39 +26,39 @@ const SofitCeiling = () => {
     }
   ];
 
-  const sofitTypes = [
+  const soffitTypes = [
     {
-      name: "Plain Sofit Panels",
+      name: "Plain Soffit Panels",
       description: "Clean, minimalist finish perfect for modern interiors with seamless aesthetics",
       features: ["Smooth surface", "Easy to clean", "Wide color range", "Cost effective"],
       bestFor: "Modern bathrooms, kitchens, contemporary homes"
     },
     {
-      name: "Designer Sofit Panels",
+      name: "Designer Soffit Panels",
       description: "Elegant textures and patterns that add character and hide imperfections beautifully",
       features: ["Attractive patterns", "Flawless finish", "Designer appeal", "Quick installation"],
       bestFor: " Living rooms, bedrooms, dining areas, offices"
     },
     {
-      name: "Wood Grain Sofit Panels",
+      name: "Wood Grain Soffit Panels",
       description: "Authentic wood appearance without the maintenance hassles of real wood",
       features: ["Natural wood look", "Termite resistant", "Waterproof", "Premium finish"],
       bestFor: "Restaurants, cafes, offices, luxury interiors"
     },
     {
-      name: "Metallic Sofit Panels",
+      name: "Metallic Soffit Panels",
       description: "Contemporary metallic finishes that add sophistication and modern appeal",
       features: ["Metallic sheen", "Scratch resistant", "Durable finish", "High-end look"],
       bestFor: "Commercial spaces, showrooms, modern offices"
     },
     {
-      name: "Glossy Sofit Panels",
+      name: "Glossy Soffit Panels",
       description: "High-shine surfaces that reflect light and create spacious, luxurious environments",
       features: ["Mirror-like finish", "Light reflective", "Easy cleaning", "Elegant appearance"],
       bestFor: "Small spaces, bathrooms, commercial areas"
     },
     {
-      name: "Matte Sofit Panels",
+      name: "Matte Soffit Panels",
       description: "Subtle, sophisticated matte finish that provides a contemporary, understated elegance",
       features: ["No-glare surface", "Fingerprint resistant", "Modern aesthetic", "Versatile styling"],
       bestFor: "Contemporary homes, offices, minimalist designs"
@@ -100,24 +100,24 @@ const SofitCeiling = () => {
   return (
     <>
       <Helmet>
-        <title>Sofit Ceiling Installation Rajkot | Waterproof Ceiling Panels Gujarat | Bathroom Ceiling Solutions</title>
-        <meta name="description" content="Sofit ceiling Rajkot from ₹60/sq.ft. 100% waterproof panels ideal for bathrooms & kitchens. Termite-proof, easy maintenance, quick installation. 10+ color options, 5-year warranty. Get instant quote now!" />
-        <meta name="keywords" content="Sofit ceiling Rajkot, waterproof ceiling Rajkot, bathroom ceiling Rajkot, kitchen ceiling Gujarat, moisture resistant ceiling Rajkot, plastic ceiling panels Gujarat, easy maintenance ceiling Rajkot, Sofit contractors Gujarat" />
-        <link rel="canonical" href="https://www.popwale.in/services/sofit-ceiling" />
+        <title>Soffit Ceiling Panels | Waterproof PVC Ceiling Installation Gujarat | Best Bathroom & Kitchen Ceiling Solutions</title>
+        <meta name="description" content="Premium Soffit ceiling panels in Rajkot from ₹90/sq.ft. 100% waterproof PVC panels perfect for bathrooms, kitchens & moisture-prone areas. Termite-proof, 50+ designs, easy maintenance, 10-year warranty. Expert installation across Gujarat. Free quote!" />
+        <meta name="keywords" content="Soffit ceiling Rajkot, Soffit panels Gujarat, waterproof ceiling Rajkot, PVC ceiling panels Rajkot, bathroom ceiling installation Rajkot, kitchen ceiling Gujarat, moisture resistant ceiling Rajkot, Soffit ceiling contractors Gujarat, plastic ceiling panels Rajkot, false ceiling bathroom Rajkot, Soffit ceiling price Rajkot" />
+        <link rel="canonical" href="https://www.popwale.in/services/soffit-ceiling" />
 
         {/* Open Graph Tags */}
-        <meta property="og:title" content="Sofit Ceiling Installation Rajkot | Waterproof Ceiling Panels Gujarat" />
-        <meta property="og:description" content="Professional Sofit ceiling installation in Rajkot. Waterproof panels for bathrooms & kitchens. Easy maintenance & durable solutions across Gujarat." />
-        <meta property="og:url" content="https://www.popwale.in/services/sofit-ceiling" />
+        <meta property="og:title" content="Soffit Ceiling Panels Rajkot | Waterproof PVC Ceiling Installation Gujarat" />
+        <meta property="og:description" content="Professional Soffit ceiling panel installation in Rajkot. 100% waterproof PVC panels for bathrooms, kitchens & moisture-prone areas. 50+ designs, 10-year warranty. Expert installation across Gujarat." />
+        <meta property="og:url" content="https://www.popwale.in/services/soffit-ceiling" />
         <meta property="og:type" content="service" />
-        <meta property="og:image" content="https://www.popwale.in/uploads/1775cb21-cb7a-43d8-a62e-e53562afd6eb.png" />
+        <meta property="og:image" content="https://www.popwale.in/uploads/soffitpanel.jpg" />
         <meta property="og:site_name" content="Popwale" />
         <meta property="og:locale" content="en_IN" />
         
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Sofit Ceiling Installation Rajkot | Waterproof Solutions" />
-        <meta name="twitter:description" content="Professional Sofit ceiling installation in Rajkot. Waterproof panels for bathrooms & moisture-prone areas across Gujarat." />
-        <meta name="twitter:image" content="https://www.popwale.in/uploads/1775cb21-cb7a-43d8-a62e-e53562afd6eb.png" />
+        <meta name="twitter:title" content="Soffit Ceiling Panels Rajkot | Waterproof PVC Ceiling Solutions" />
+        <meta name="twitter:description" content="Premium Soffit ceiling panels in Rajkot. 100% waterproof PVC panels for bathrooms, kitchens & moisture-prone areas. 50+ designs, expert installation across Gujarat." />
+        <meta name="twitter:image" content="https://www.popwale.in/uploads/soffitpanel.jpg" />
         
         <meta name="geo.region" content="IN-GJ" />
         <meta name="geo.placename" content="Rajkot" />
@@ -127,8 +127,8 @@ const SofitCeiling = () => {
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Service",
-            "name": "Sofit Ceiling Installation - Rajkot",
-            "description": "Professional Sofit ceiling installation services in Rajkot, Gujarat specializing in waterproof ceiling panels for bathrooms and moisture-prone areas",
+            "name": "Soffit Ceiling Panel Installation - Rajkot",
+            "description": "Professional Soffit ceiling panel installation services in Rajkot, Gujarat. Specializing in 100% waterproof PVC ceiling panels for bathrooms, kitchens, and moisture-prone areas with 10-year warranty",
             "provider": {
               "@type": "Organization",
               "name": "Popwale",
@@ -166,10 +166,10 @@ const SofitCeiling = () => {
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               <div className="animate-fade-up space-y-6 lg:space-y-8">
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
-                  Sofit Ceiling Panels - Rajkot
+                  Soffit Ceiling Panels - Rajkot
                 </h1>
                 <p className="text-lg sm:text-xl lg:text-2xl text-primary-foreground/90 leading-relaxed max-w-2xl">
-                  Waterproof Sofit ceiling panels in Rajkot, Gujarat perfect for bathrooms, kitchens, and moisture-prone areas. Easy maintenance, quick installation, and long-lasting durability across Gujarat.
+                  Premium waterproof Soffit ceiling panels in Rajkot, Gujarat - perfect for bathrooms, kitchens, and moisture-prone areas. 50+ designs, easy maintenance, quick installation, and long-lasting durability with 10-year warranty.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <Link to="/quotation" className="btn-hero text-sm sm:text-base px-6 py-3 sm:px-8 sm:py-4 flex items-center justify-center">
@@ -184,8 +184,8 @@ const SofitCeiling = () => {
               
               <div className="card-gallery animate-scale-in mt-8 lg:mt-0">
                 <img 
-                  src="/uploads/1775cb21-cb7a-43d8-a62e-e53562afd6eb.png" 
-                  alt="Waterproof Sofit ceiling panels for bathrooms and kitchens"
+                  src="/uploads/soffitpanel.jpg" 
+                  alt="Waterproof Soffit ceiling panels for bathrooms and kitchens in Rajkot"
                   className="w-full h-56 sm:h-72 lg:h-80 object-cover rounded-lg"
                 />
               </div>
@@ -198,10 +198,10 @@ const SofitCeiling = () => {
           <div className="container-curved">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
-                Why Choose Sofit Ceilings?
+                Why Choose Soffit Ceilings?
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Sofit ceilings offer unmatched practicality and aesthetics for moisture-prone environments.
+                Soffit ceiling panels offer unmatched practicality, durability, and aesthetics for moisture-prone environments in Rajkot and across Gujarat.
               </p>
             </div>
 
@@ -237,15 +237,15 @@ const SofitCeiling = () => {
           <div className="container-curved">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
-                Sofit Panel Varieties
+                Soffit Panel Varieties
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Discover our extensive collection of premium Sofit panel varieties, each designed to elevate your space with style, functionality, and unmatched quality. From minimalist modern looks to luxurious designer finishes, find the perfect Sofit solution for your unique vision.
+                Discover our extensive collection of 50+ premium Soffit panel varieties in Rajkot, each designed to elevate your space with style, functionality, and unmatched quality. From minimalist modern looks to luxurious designer finishes, find the perfect waterproof Soffit ceiling solution for your unique vision.
               </p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {sofitTypes.map((type, index) => (
+              {soffitTypes.map((type, index) => (
                 <div 
                   key={index}
                   className="bg-card border border-border rounded-[var(--radius-xl)] p-8 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-elegant)] transition-all duration-300 animate-fade-up"
@@ -288,7 +288,7 @@ const SofitCeiling = () => {
                   Perfect Applications
                 </h2>
                 <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
-                  Sofit ceilings are ideal for areas with high moisture and humidity:
+                  Soffit ceiling panels are ideal for areas with high moisture and humidity in Rajkot:
                 </p>
                 
                 <div className="space-y-3">
@@ -316,7 +316,7 @@ const SofitCeiling = () => {
                 
                 <div className="mt-8 pt-6 border-t border-border">
                   <Link to="/quotation" className="btn-hero w-full">
-                    Get Sofit Quote
+                    Get Soffit Quote
                   </Link>
                 </div>
               </div>
@@ -329,10 +329,10 @@ const SofitCeiling = () => {
           <div className="container-curved">
             <div className="text-center mb-16">
               <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
-                Sofit Ceiling Advantages
+                Soffit Ceiling Advantages
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                Discover why Sofit ceilings are the smart choice for modern homes and commercial spaces.
+                Discover why Soffit ceiling panels are the smart choice for modern homes and commercial spaces in Rajkot and Gujarat.
               </p>
             </div>
 
@@ -394,4 +394,4 @@ const SofitCeiling = () => {
   );
 };
 
-export default SofitCeiling;
+export default SoffitCeiling;

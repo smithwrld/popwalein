@@ -103,7 +103,7 @@ const PunningWork = () => {
   return (
     <>
       <Helmet>
-        <title>Punning Work Rajkot | Decorative Plaster Art Gujarat | Custom Interior Designs | Popwale</title>
+        <title>Punning Work | Decorative Plaster Art Gujarat | Custom Interior Designs | Popwale</title>
         <meta name="description" content="Expert Punning Work in Rajkot - Transform your space with intricate decorative plaster art. Custom designs, traditional & modern styles, premium craftsmanship. Starting ₹150/sq.ft. 500+ projects completed!" />
         <meta name="keywords" content="Punning work Rajkot, decorative plaster Rajkot, plaster art Gujarat, custom interiors Rajkot, decorative molding Gujarat, plaster designs Rajkot, interior decoration Gujarat, artistic plaster work Rajkot, decorative elements Gujarat, plaster craftsmanship Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/services/punning-work" />
@@ -113,14 +113,14 @@ const PunningWork = () => {
         <meta property="og:description" content="Professional punning work in Rajkot. Custom decorative plaster designs, intricate patterns, traditional & modern styles. Premium craftsmanship for luxury interiors." />
         <meta property="og:url" content="https://www.popwale.in/services/punning-work" />
         <meta property="og:type" content="service" />
-        <meta property="og:image" content="https://www.popwale.in/uploads/1775cb21-cb7a-43d8-a62e-e53562afd6eb.png" />
+        <meta property="og:image" content="https://www.popwale.in/uploads/punningwork.jpeg" />
         <meta property="og:site_name" content="Popwale" />
         <meta property="og:locale" content="en_IN" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Punning Work Rajkot | Decorative Plaster Art" />
         <meta name="twitter:description" content="Expert decorative plaster work in Rajkot. Custom designs, intricate patterns, premium craftsmanship for luxury interiors." />
-        <meta name="twitter:image" content="https://www.popwale.in/uploads/1775cb21-cb7a-43d8-a62e-e53562afd6eb.png" />
+        <meta name="twitter:image" content="https://www.popwale.in/uploads/punningwork.jpeg" />
 
         <meta name="geo.region" content="IN-GJ" />
         <meta name="geo.placename" content="Rajkot" />
@@ -264,7 +264,7 @@ const PunningWork = () => {
 
               <div className="card-gallery animate-scale-in mt-8 lg:mt-0">
                 <img
-                  src="/uploads/1775cb21-cb7a-43d8-a62e-e53562afd6eb.png"
+                  src="/uploads/punningwork.jpeg"
                   alt="Exquisite punning work showcasing intricate decorative plaster art"
                   className="w-full h-56 sm:h-72 lg:h-80 object-cover rounded-lg"
                 />

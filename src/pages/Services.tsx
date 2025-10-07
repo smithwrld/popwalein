@@ -1,7 +1,7 @@
 import { ArrowRight, Star, Wrench, Palette, Shield, MessageSquare, Calendar, Package, Award, CheckCircle, Lightbulb, Target, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import serviceCeiling from "@/assets/service-ceiling.jpg";
+import serviceCeiling from "@/assets/hero-gypsum-ceiling.jpg";
 import serviceWalls from "@/assets/service-walls.jpg";
 import serviceDecorative from "@/assets/service-decorative.jpg";
 
@@ -349,9 +349,9 @@ const Services = () => {
 
             {/* PVC Ceiling */}
             <div className="card-service group animate-fade-up" style={{ animationDelay: '0.3s' }}>
-              <h3 className="text-xl font-bold text-foreground mb-3">Sofit Ceiling</h3>
+              <h3 className="text-xl font-bold text-foreground mb-3">Soffit Ceiling</h3>
               <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-                Waterproof Sofit ceiling panels ideal for bathrooms and moisture-prone areas
+                Waterproof Soffit ceiling panels ideal for bathrooms and moisture-prone areas
               </p>
               <div className="space-y-3 mb-6">
                 <div className="flex items-center space-x-3">
@@ -372,7 +372,7 @@ const Services = () => {
                 </div>
               </div>
               <Link 
-                to="/services/sofit-ceiling" 
+                to="/services/soffit-ceiling" 
                 className="inline-flex items-center gap-1 text-primary font-medium text-sm hover:text-primary/80 transition-colors duration-200"
               >
                 Learn More

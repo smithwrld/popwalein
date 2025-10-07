@@ -31,7 +31,7 @@ const Index = () => {
   const services = [{
     title: "Ceiling Design & Installation",
     description: "Transform your ceilings with innovative P.O.P designs, false ceiling installations, decorative patterns, and integrated LED lighting solutions for modern homes and offices.",
-    image: "/uploads/78b6c443-1d1c-4426-b4cb-9496783482cc.png",
+    image: "/src/assets/hero-gypsum-ceiling.jpg",
     link: "/services/ceiling-design",
     features: ["False Ceiling", "LED Integration", "Acoustic Solutions", "Custom Patterns"]
   }];
@@ -260,7 +260,7 @@ const Index = () => {
   }];
   return <>
       <Helmet>
-        <title>Popwale - Expert P.O.P Services in Rajkot | #1 Ceiling Design Contractors Gujarat</title>
+        <title>Popwale - Expert P.O.P Services | #1 Ceiling Design Contractors Gujarat</title>
         <meta name="description" content="Rajkot's #1 P.O.P ceiling contractors with 500+ projects. Expert gypsum, grid, stretch & soundproof installations. ISO certified, EMI available, free quotes in 24hrs. Transform your home or office with premium ceilings!" />
         <meta name="keywords" content="POP services Rajkot, ceiling design Rajkot, gypsum ceiling contractors Rajkot, false ceiling Rajkot, plaster of paris work Rajkot, interior design services Rajkot, ceiling installation Rajkot, P.O.P contractors Gujarat, decorative elements Rajkot, professional ceiling work Rajkot" />
         <link rel="canonical" href="https://www.popwale.in/" />
@@ -402,7 +402,7 @@ const Index = () => {
             <h1 className="font-elegant text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight text-white drop-shadow-2xl" style={{
               textShadow: '2px 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5)'
             }}>
-              Popwale
+              POP Wale
             </h1>
           </div>
 
@@ -410,7 +410,7 @@ const Index = () => {
           <p className="text-xl sm:text-2xl text-white mb-10 max-w-3xl mx-auto leading-relaxed font-medium" style={{
             textShadow: '1px 1px 3px rgba(0,0,0,0.7)'
           }}>
-            Transform your space with expert P.O.P services in Rajkot. Professional ceiling design, gypsum installation & decorative elements with 
+            Transform your space with expert P.O.P services. Professional ceiling design, gypsum installation & decorative elements with 
             <span className="text-white font-semibold" style={{
               textShadow: '1px 1px 4px rgba(0,0,0,0.8)'
             }}> ISO certified quality</span>
@@ -464,7 +464,7 @@ const Index = () => {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className="animate-slide-in">
               <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-6">
-                Rajkot's Premier P.O.P Service Provider
+                Your Premier P.O.P Service Provider
               </h2>
               <p className="text-lg text-muted-foreground mb-6 leading-relaxed">
                 With over 5 years of expertise in plaster of paris services across Rajkot and Gujarat, Popwale has 

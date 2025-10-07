@@ -15,18 +15,23 @@ const HeroSlider = () => {
     },
     {
       id: 2,
-      image: '/uploads/7b257dd9-13f9-4cfc-9326-addda647f516.png',
+      image: '/uploads/gridceiling.jpg  ',
       alt: 'Grid Ceiling Installation'
     },
     {
       id: 3,
-      image: '/uploads/1775cb21-cb7a-43d8-a62e-e53562afd6eb.png',
+      image: '/uploads/soffitpanel.jpg',
       alt: 'Soffit Panel Installation'
     },
     {
       id: 4,
-      image: '/uploads/e5981028-adeb-416d-852f-22f37fc9a442.png',
+      image: '/uploads/stretchceiling.png',
       alt: 'Stretch Ceiling Installation'
+    },
+    {
+      id: 5,
+      image: '/uploads/punningwork.jpeg',
+      alt: 'Punning Work'
     }
   ];
 

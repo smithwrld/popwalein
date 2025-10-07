@@ -222,7 +222,7 @@ const Contact = () => {
   }, {
     icon: <MapPin className="w-6 h-6 text-primary" />,
     title: "Office Address",
-    details: ["150 Feet Ring Rd, near The spire", "Sheetal Park, Shastri Nagar", "Dharam Nagar, Rajkot, Gujarat 360007"]
+    details: ["150 Feet Ring Rd, near The spire", "Sheetal Park, Shastri Nagar.","Rajkot - Gujarat 360007"]
   }];
   const serviceAreas = ["Rajkot", "Morbi", "Jamnagar", "Junagadh"];
   const supportInfo = [{

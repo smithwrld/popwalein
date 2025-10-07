@@ -98,14 +98,14 @@ const StretchCeiling = () => {
         <meta property="og:description" content="Professional stretch ceiling installation in Rajkot with custom prints. Modern ceiling systems with quick installation across Gujarat." />
         <meta property="og:url" content="https://www.popwale.in/services/stretch-ceiling" />
         <meta property="og:type" content="service" />
-        <meta property="og:image" content="https://www.popwale.in/uploads/e5981028-adeb-416d-852f-22f37fc9a442.png" />
+        <meta property="og:image" content="https://www.popwale.in/uploads/stretchceiling.png" />
         <meta property="og:site_name" content="Popwale" />
         <meta property="og:locale" content="en_IN" />
         
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Stretch Ceiling Installation Rajkot | Custom Design Solutions" />
         <meta name="twitter:description" content="Professional stretch ceiling installation in Rajkot. Custom prints & modern ceiling systems across Gujarat." />
-        <meta name="twitter:image" content="https://www.popwale.in/uploads/e5981028-adeb-416d-852f-22f37fc9a442.png" />
+        <meta name="twitter:image" content="https://www.popwale.in/uploads/stretchceiling.png" />
         
         <meta name="geo.region" content="IN-GJ" />
         <meta name="geo.placename" content="Rajkot" />
@@ -154,7 +154,7 @@ const StretchCeiling = () => {
             <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
               <div className="animate-fade-up space-y-6 lg:space-y-8">
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight">
-                  Stretch Ceiling Systems - Rajkot
+                  Stretch Ceiling Systems
                 </h1>
                 <p className="text-lg sm:text-xl lg:text-2xl text-primary-foreground/90 leading-relaxed max-w-2xl">
                   Revolutionary stretch ceiling technology in Rajkot, Gujarat with seamless installation, custom prints, and unlimited design possibilities. Transform any space across Gujarat in just hours.
@@ -172,7 +172,7 @@ const StretchCeiling = () => {
               
               <div className="card-gallery animate-scale-in mt-8 lg:mt-0">
                 <img 
-                  src="/uploads/e5981028-adeb-416d-852f-22f37fc9a442.png" 
+                  src="/uploads/stretchceiling.png" 
                   alt="Modern stretch ceiling with custom design and seamless finish"
                   className="w-full h-56 sm:h-72 lg:h-80 object-cover rounded-lg"
                 />
