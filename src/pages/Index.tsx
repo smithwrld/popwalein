@@ -31,7 +31,7 @@ const Index = () => {
   const services = [{
     title: "Ceiling Design & Installation",
     description: "Transform your ceilings with innovative P.O.P designs, false ceiling installations, decorative patterns, and integrated LED lighting solutions for modern homes and offices.",
-    image: "/src/assets/hero-gypsum-ceiling.jpg",
+    image: "/assets/hero-gypsum-ceiling.jpg",
     link: "/services/ceiling-design",
     features: ["False Ceiling", "LED Integration", "Acoustic Solutions", "Custom Patterns"]
   }];
