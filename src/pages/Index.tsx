@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import HeroSlider from "@/components/HeroSlider";
 // Using uploaded stretch ceiling image instead
 import serviceDecorative from "@/assets/service-decorative.jpg";
+import heroGypsumCeiling from "@/assets/hero-gypsum-ceiling.jpg";
 import popwaleLogo from "@/assets/popwale-logo.png";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import GyprocPartnership from "@/components/GyprocPartnership";
@@ -31,7 +32,7 @@ const Index = () => {
   const services = [{
     title: "Ceiling Design & Installation",
     description: "Transform your ceilings with innovative P.O.P designs, false ceiling installations, decorative patterns, and integrated LED lighting solutions for modern homes and offices.",
-    image: "/assets/hero-gypsum-ceiling.jpg",
+    image: heroGypsumCeiling,
     link: "/services/ceiling-design",
     features: ["False Ceiling", "LED Integration", "Acoustic Solutions", "Custom Patterns"]
   }];
