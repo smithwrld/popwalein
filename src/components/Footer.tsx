@@ -269,7 +269,7 @@ const Footer = () => {
                   className="text-accent-light font-medium hover:text-accent-light/80 transition-colors duration-200"
                   aria-label="Visit Something Media website"
                 >
-                  Something Media
+                   Something Media
                 </a>
               </div>
               
