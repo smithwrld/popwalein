@@ -261,7 +261,7 @@ const Footer = () => {
               </div>
               
               <div className="text-primary-foreground/60 text-sm text-center md:text-right">
-                Made with 💗 by 
+                Made with 💗 by  
                 <a 
                   href="https://www.somethingmedia.in/" 
                   target="_blank" 
