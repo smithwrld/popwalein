@@ -257,12 +257,11 @@ const Footer = () => {
           <div className="border-t border-primary-foreground/10 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="text-primary-foreground/70 text-sm text-center md:text-left">
-                 {currentYear} Popwale. All rights reserved. | 
-                <span className="text-accent-light">Crafting Dream Interiors Since 2019</span>
+                 {currentYear} Popwale. All rights reserved.
               </div>
               
               <div className="text-primary-foreground/60 text-sm text-center md:text-right">
-                Made with  by 
+                Made with 💗 by 
                 <a 
                   href="https://www.somethingmedia.in/" 
                   target="_blank" 
