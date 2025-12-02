@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Trash2, Upload, Image as ImageIcon } from 'lucide-react';
+import { Loader2, Trash2, Upload, Image as ImageIcon, Plus, FolderOpen, Star } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { LogOut } from 'lucide-react';
 
@@ -26,68 +27,96 @@ interface Subcategory {
   display_order: number;
 }
 
+interface GalleryProject {
+  id: string;
+  title: string;
+  description: string | null;
+  category_id: string | null;
+  subcategory_id: string | null;
+  thumbnail_image_id: string | null;
+  display_order: number;
+  created_at: string;
+}
+
 interface GalleryImage {
   id: string;
-  category_id: string;
-  subcategory_id: string | null;
+  project_id: string | null;
   title: string;
   description: string;
   image_url: string;
   alt_text: string;
   display_order: number;
-  is_featured: boolean;
 }
 
 const AdminPanel = () => {
   const { user, profile, loading, signOut } = useAuth();
   const { toast } = useToast();
   
-  // All hooks must be called before any conditional returns
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [projects, setProjects] = useState<GalleryProject[]>([]);
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [creatingProject, setCreatingProject] = useState(false);
+  const [tableExists, setTableExists] = useState(true);
 
   // Form states
-  const [imageForm, setImageForm] = useState({
+  const [projectForm, setProjectForm] = useState({
     title: '',
-    alt_text: '',
+    description: '',
     category_id: '',
     subcategory_id: ''
   });
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  const [selectedProject, setSelectedProject] = useState<string>('');
+  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
 
   const fetchData = async () => {
-    console.log('AdminPanel: Starting fetchData...');
     try {
-      const [categoriesRes, subcategoriesRes, imagesRes] = await Promise.all([
+      const [categoriesRes, subcategoriesRes] = await Promise.all([
         supabase.from('gallery_categories').select('*').order('display_order'),
         supabase.from('gallery_subcategories').select('*').order('display_order'),
-        supabase.from('gallery_images').select('*').order('display_order')
       ]);
-
-      console.log('AdminPanel: Database responses:', {
-        categories: categoriesRes,
-        subcategories: subcategoriesRes,
-        images: imagesRes
-      });
 
       if (categoriesRes.error) throw categoriesRes.error;
       if (subcategoriesRes.error) throw subcategoriesRes.error;
-      if (imagesRes.error) throw imagesRes.error;
-
-      console.log('AdminPanel: Setting data...', {
-        categoriesCount: categoriesRes.data?.length,
-        subcategoriesCount: subcategoriesRes.data?.length,
-        imagesCount: imagesRes.data?.length
-      });
 
       setCategories(categoriesRes.data || []);
       setSubcategories(subcategoriesRes.data || []);
-      setImages(imagesRes.data || []);
+
+      // Try to fetch projects - may not exist yet
+      const projectsRes = await supabase
+        .from('gallery_projects' as any)
+        .select('*')
+        .order('display_order');
+
+      if (projectsRes.error) {
+        if (projectsRes.error.message.includes('does not exist')) {
+          setTableExists(false);
+          setProjects([]);
+        } else {
+          console.error('Projects error:', projectsRes.error);
+        }
+      } else {
+        setTableExists(true);
+        setProjects((projectsRes.data || []) as unknown as GalleryProject[]);
+      }
+
+      // Fetch images
+      const imagesRes = await supabase
+        .from('gallery_images')
+        .select('*')
+        .order('display_order');
+
+      if (imagesRes.error) throw imagesRes.error;
+      setImages((imagesRes.data || []).map((img: any) => ({
+        ...img,
+        project_id: img.project_id || null
+      })) as GalleryImage[]);
+
     } catch (error: any) {
-      console.error('AdminPanel: Error in fetchData:', error);
+      console.error('Error in fetchData:', error);
       toast({
         title: "Error",
         description: "Failed to load data: " + error.message,
@@ -99,24 +128,13 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
-    console.log('AdminPanel: useEffect called with:', { 
-      user: !!user, 
-      userId: user?.id, 
-      profile: !!profile, 
-      isAdmin: profile?.is_admin,
-      loading 
-    });
-    
     if (user && profile?.is_admin) {
-      console.log('AdminPanel: Conditions met, calling fetchData...');
       fetchData();
     } else {
-      console.log('AdminPanel: Conditions not met - not calling fetchData');
       setLoadingData(false);
     }
   }, [user, profile]);
 
-  // Check if user is admin AFTER all hooks are called
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -128,6 +146,48 @@ const AdminPanel = () => {
   if (!user || !profile?.is_admin) {
     return <Navigate to="/auth" replace />;
   }
+
+  const handleCreateProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!projectForm.title.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a project title",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setCreatingProject(true);
+    try {
+      const { error } = await supabase
+        .from('gallery_projects' as any)
+        .insert([{
+          title: projectForm.title,
+          description: projectForm.description || null,
+          category_id: projectForm.category_id || null,
+          subcategory_id: projectForm.subcategory_id || null,
+          display_order: projects.length + 1
+        }] as any);
+
+      if (error) throw error;
+
+      setProjectForm({ title: '', description: '', category_id: '', subcategory_id: '' });
+      fetchData();
+      toast({
+        title: "Success",
+        description: "Project created successfully"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setCreatingProject(false);
+    }
+  };
 
   const handleFileUpload = async (file: File) => {
     const fileExt = file.name.split('.').pop();
@@ -147,12 +207,21 @@ const AdminPanel = () => {
     return data.publicUrl;
   };
 
-  const handleCreateImage = async (e: React.FormEvent) => {
+  const handleUploadImages = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedFile) {
+    if (!selectedProject) {
       toast({
         title: "Error",
-        description: "Please select an image file",
+        description: "Please select a project first",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!selectedFiles || selectedFiles.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please select at least one image",
         variant: "destructive"
       });
       return;
@@ -160,33 +229,37 @@ const AdminPanel = () => {
 
     setUploading(true);
     try {
-      const imageUrl = await handleFileUpload(selectedFile);
+      const projectImages = images.filter(img => img.project_id === selectedProject);
+      let displayOrder = projectImages.length;
+      const project = projects.find(p => p.id === selectedProject);
+
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const file = selectedFiles[i];
+        const imageUrl = await handleFileUpload(file);
+        
+        const { error } = await supabase
+          .from('gallery_images')
+          .insert([{
+            project_id: selectedProject,
+            category_id: project?.category_id || categories[0]?.id,
+            title: file.name.replace(/\.[^/.]+$/, ''),
+            alt_text: file.name.replace(/\.[^/.]+$/, ''),
+            image_url: imageUrl,
+            display_order: displayOrder + i + 1,
+            uploaded_by: user.id
+          }] as any);
+
+        if (error) throw error;
+      }
+
+      setSelectedFiles(null);
+      const fileInput = document.getElementById('images-file') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
       
-      const { error } = await supabase
-        .from('gallery_images')
-        .insert([{
-          title: imageForm.title,
-          alt_text: imageForm.alt_text,
-          category_id: imageForm.category_id,
-          subcategory_id: imageForm.subcategory_id || null,
-          image_url: imageUrl,
-          display_order: images.length + 1,
-          uploaded_by: user.id
-        }]);
-
-      if (error) throw error;
-
-      setImageForm({
-        title: '',
-        alt_text: '',
-        category_id: '',
-        subcategory_id: ''
-      });
-      setSelectedFile(null);
       fetchData();
       toast({
         title: "Success",
-        description: "Image uploaded successfully"
+        description: `${selectedFiles.length} image(s) uploaded successfully`
       });
     } catch (error: any) {
       toast({
@@ -196,6 +269,29 @@ const AdminPanel = () => {
       });
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleSetThumbnail = async (projectId: string, imageId: string) => {
+    try {
+      const { error } = await supabase
+        .from('gallery_projects' as any)
+        .update({ thumbnail_image_id: imageId } as any)
+        .eq('id', projectId);
+
+      if (error) throw error;
+
+      fetchData();
+      toast({
+        title: "Success",
+        description: "Thumbnail set successfully"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
     }
   };
 
@@ -222,12 +318,50 @@ const AdminPanel = () => {
     }
   };
 
-  const getCategoryName = (categoryId: string) => {
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      const { error } = await supabase
+        .from('gallery_projects' as any)
+        .delete()
+        .eq('id', projectId);
+
+      if (error) throw error;
+
+      fetchData();
+      toast({
+        title: "Success",
+        description: "Project and all its images deleted successfully"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const getCategoryName = (categoryId: string | null) => {
+    if (!categoryId) return 'Uncategorized';
     return categories.find(c => c.id === categoryId)?.name || 'Unknown';
   };
 
-  const getSubcategoryName = (subcategoryId: string) => {
-    return subcategories.find(s => s.id === subcategoryId)?.name || 'None';
+  const getSubcategoryName = (subcategoryId: string | null) => {
+    if (!subcategoryId) return '';
+    return subcategories.find(s => s.id === subcategoryId)?.name || '';
+  };
+
+  const getProjectImages = (projectId: string) => {
+    return images.filter(img => img.project_id === projectId);
+  };
+
+  const getProjectThumbnail = (project: GalleryProject) => {
+    if (project.thumbnail_image_id) {
+      const thumbImage = images.find(img => img.id === project.thumbnail_image_id);
+      if (thumbImage) return thumbImage.image_url;
+    }
+    const projectImages = getProjectImages(project.id);
+    return projectImages[0]?.image_url || null;
   };
 
   if (loadingData) {
@@ -246,7 +380,7 @@ const AdminPanel = () => {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-xl sm:text-2xl font-elegant text-foreground">Admin Panel</h1>
-              <p className="text-sm text-muted-foreground">Gallery Management System</p>
+              <p className="text-sm text-muted-foreground">Project-Based Gallery Management</p>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               <span className="text-xs sm:text-sm text-muted-foreground truncate">Welcome, {profile?.email}</span>
@@ -259,198 +393,351 @@ const AdminPanel = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-4 sm:p-6">
-        <div className="mb-6 flex items-center gap-2">
-          <ImageIcon className="w-5 h-5 text-primary" />
-          <h2 className="text-xl font-semibold text-foreground">Gallery Images</h2>
-        </div>
-
-        <div className="space-y-6">
-
-          <Card className="card-elegant">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-8">
+        
+        {/* Setup Warning */}
+        {!tableExists && (
+          <Card className="border-destructive bg-destructive/10">
             <CardHeader>
-              <CardTitle>Add Gallery Image</CardTitle>
-              <CardDescription>Upload images with proper categorization for the gallery</CardDescription>
+              <CardTitle className="text-destructive">Database Setup Required</CardTitle>
+              <CardDescription>
+                The gallery_projects table doesn't exist yet. Please run the following SQL in your Supabase SQL Editor:
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleCreateImage} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="image-title">Title *</Label>
-                    <Input
-                      id="image-title"
-                      placeholder="Enter image title"
-                      value={imageForm.title}
-                      onChange={(e) => setImageForm({...imageForm, title: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="image-alt">Alt Text *</Label>
-                    <Input
-                      id="image-alt"
-                      placeholder="Describe the image for accessibility"
-                      value={imageForm.alt_text}
-                      onChange={(e) => setImageForm({...imageForm, alt_text: e.target.value})}
-                      required
-                    />
-                  </div>
-                </div>
+              <pre className="text-xs bg-muted p-4 rounded-lg overflow-x-auto whitespace-pre-wrap">
+{`-- Create gallery_projects table
+CREATE TABLE IF NOT EXISTS public.gallery_projects (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    category_id UUID REFERENCES public.gallery_categories(id) ON DELETE SET NULL,
+    subcategory_id UUID REFERENCES public.gallery_subcategories(id) ON DELETE SET NULL,
+    thumbnail_image_id UUID,
+    display_order INTEGER DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+-- Add project_id column to gallery_images
+ALTER TABLE public.gallery_images 
+ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES public.gallery_projects(id) ON DELETE CASCADE;
+
+-- Enable RLS
+ALTER TABLE public.gallery_projects ENABLE ROW LEVEL SECURITY;
+
+-- RLS policies
+CREATE POLICY "Anyone can view gallery projects" ON public.gallery_projects FOR SELECT TO public USING (true);
+CREATE POLICY "Admins can insert gallery projects" ON public.gallery_projects FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.is_admin = true));
+CREATE POLICY "Admins can update gallery projects" ON public.gallery_projects FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.is_admin = true));
+CREATE POLICY "Admins can delete gallery projects" ON public.gallery_projects FOR DELETE TO authenticated USING (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.is_admin = true));
+
+-- Create indexes
+CREATE INDEX IF NOT EXISTS idx_gallery_images_project_id ON public.gallery_images(project_id);
+CREATE INDEX IF NOT EXISTS idx_gallery_projects_category_id ON public.gallery_projects(category_id);`}
+              </pre>
+              <Button className="mt-4" onClick={() => fetchData()}>
+                Refresh After Running SQL
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {tableExists && (
+          <>
+            {/* Create Project Section */}
+            <Card className="card-elegant">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Plus className="w-5 h-5" />
+                  Create New Project
+                </CardTitle>
+                <CardDescription>Create a project first, then add images to it</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleCreateProject} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="project-title">Project Title *</Label>
+                      <Input
+                        id="project-title"
+                        placeholder="e.g., Modern Living Room Ceiling"
+                        value={projectForm.title}
+                        onChange={(e) => setProjectForm({...projectForm, title: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="project-category">Category</Label>
+                      <Select 
+                        value={projectForm.category_id} 
+                        onValueChange={(value) => setProjectForm({...projectForm, category_id: value, subcategory_id: ''})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category (optional)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.map((category) => (
+                            <SelectItem key={category.id} value={category.id}>
+                              {category.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="project-description">Description</Label>
+                      <Textarea
+                        id="project-description"
+                        placeholder="Describe this project..."
+                        value={projectForm.description}
+                        onChange={(e) => setProjectForm({...projectForm, description: e.target.value})}
+                        rows={3}
+                      />
+                    </div>
+                    {projectForm.category_id && subcategories.filter(s => s.category_id === projectForm.category_id).length > 0 && (
+                      <div className="space-y-2">
+                        <Label htmlFor="project-subcategory">Subcategory</Label>
+                        <Select 
+                          value={projectForm.subcategory_id} 
+                          onValueChange={(value) => setProjectForm({...projectForm, subcategory_id: value})}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select subcategory (optional)" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {subcategories
+                              .filter(sub => sub.category_id === projectForm.category_id)
+                              .map((subcategory) => (
+                                <SelectItem key={subcategory.id} value={subcategory.id}>
+                                  {subcategory.name}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
+                  </div>
+
+                  <Button type="submit" disabled={creatingProject}>
+                    {creatingProject ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Project
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            {/* Upload Images to Project */}
+            <Card className="card-elegant">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="w-5 h-5" />
+                  Upload Images to Project
+                </CardTitle>
+                <CardDescription>Select a project and upload multiple images at once</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleUploadImages} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="image-category">Category *</Label>
-                    <Select value={imageForm.category_id} onValueChange={(value) => setImageForm({...imageForm, category_id: value, subcategory_id: ''})}>
+                    <Label htmlFor="select-project">Select Project *</Label>
+                    <Select value={selectedProject} onValueChange={setSelectedProject}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select category" />
+                        <SelectValue placeholder="Choose a project to add images" />
                       </SelectTrigger>
                       <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.name}
+                        {projects.map((project) => (
+                          <SelectItem key={project.id} value={project.id}>
+                            {project.title} ({getProjectImages(project.id).length} images)
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="image-subcategory">Subcategory</Label>
-                    <Select value={imageForm.subcategory_id} onValueChange={(value) => setImageForm({...imageForm, subcategory_id: value})}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select subcategory (optional)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {subcategories
-                          .filter(sub => sub.category_id === imageForm.category_id)
-                          .map((subcategory) => (
-                            <SelectItem key={subcategory.id} value={subcategory.id}>
-                              {subcategory.name}
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="image-file">Choose Image *</Label>
-                  <div className="relative">
-                    <div className="flex items-center justify-center w-full">
+                  <div className="space-y-2">
+                    <Label htmlFor="images-file">Choose Images *</Label>
+                    <div className="relative">
                       <label 
-                        htmlFor="image-file" 
-                        className="flex flex-col items-center justify-center w-full h-40 sm:h-32 border-2 border-dashed border-border rounded-lg cursor-pointer bg-background hover:bg-muted/50 hover:border-primary/50 transition-all duration-200 touch-manipulation"
+                        htmlFor="images-file" 
+                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer bg-background hover:bg-muted/50 hover:border-primary/50 transition-all duration-200"
                       >
-                        <div className="flex flex-col items-center justify-center px-4 py-6 sm:py-5">
-                          <Upload className="w-10 h-10 sm:w-8 sm:h-8 mb-3 text-muted-foreground" />
-                          <p className="mb-2 text-sm sm:text-sm text-muted-foreground text-center">
-                            <span className="font-semibold">Tap to upload</span>
-                            <span className="hidden sm:inline"> or drag and drop</span>
+                        <div className="flex flex-col items-center justify-center py-4">
+                          <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
+                          <p className="text-sm text-muted-foreground">
+                            <span className="font-semibold">Click to upload</span> multiple images
                           </p>
-                          <p className="text-xs text-muted-foreground text-center px-2">PNG, JPG, GIF up to 10MB</p>
+                          <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB each</p>
                         </div>
                         <input 
-                          id="image-file" 
+                          id="images-file" 
                           type="file" 
                           accept="image/*"
-                          onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-                          required
+                          multiple
+                          onChange={(e) => setSelectedFiles(e.target.files)}
                           className="hidden" 
                         />
                       </label>
                     </div>
+                    {selectedFiles && selectedFiles.length > 0 && (
+                      <div className="p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                        <p className="text-sm font-medium text-foreground">
+                          {selectedFiles.length} file(s) selected
+                        </p>
+                        <div className="mt-2 space-y-1 max-h-32 overflow-y-auto">
+                          {Array.from(selectedFiles).map((file, idx) => (
+                            <p key={idx} className="text-xs text-muted-foreground truncate">
+                              {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  {selectedFile && (
-                    <div className="p-3 sm:p-4 bg-primary/5 border border-primary/20 rounded-lg">
-                      <div className="flex items-start sm:items-center gap-3">
-                        <div className="flex-shrink-0 w-10 h-10 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                          <ImageIcon className="w-5 h-5 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate">{selectedFile.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-                            <span className="hidden sm:inline"> • {selectedFile.type}</span>
-                          </p>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setSelectedFile(null)}
-                          className="flex-shrink-0 text-muted-foreground hover:text-foreground min-w-8 min-h-8"
-                        >
-                          ✕
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </div>
 
-                <Button type="submit" disabled={uploading} className="w-full">
-                  {uploading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Uploading Image...
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="mr-2 h-4 w-4" />
-                      Add to Gallery
-                    </>
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  <Button type="submit" disabled={uploading || !selectedProject}>
+                    {uploading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="mr-2 h-4 w-4" />
+                        Upload Images
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
 
-          <Card className="card-elegant">
-            <CardHeader>
-              <CardTitle>Gallery Images ({images.length})</CardTitle>
-              <CardDescription>All images currently in the gallery</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {images.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <ImageIcon className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No images in gallery yet. Add your first image above.</p>
-                </div>
+            {/* Projects List */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-2">
+                <FolderOpen className="w-5 h-5 text-primary" />
+                <h2 className="text-xl font-semibold text-foreground">Projects ({projects.length})</h2>
+              </div>
+
+              {projects.length === 0 ? (
+                <Card className="card-elegant">
+                  <CardContent className="py-12 text-center">
+                    <FolderOpen className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                    <p className="text-muted-foreground">No projects yet. Create your first project above.</p>
+                  </CardContent>
+                </Card>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {images.map((image) => (
-                    <div key={image.id} className="border rounded-lg p-3 sm:p-4 space-y-3 hover:shadow-md transition-shadow bg-card">
-                      <div className="aspect-video w-full overflow-hidden rounded-md">
-                        <img
-                          src={image.image_url}
-                          alt={image.alt_text}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <h4 className="font-medium text-sm truncate" title={image.title}>{image.title}</h4>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {getCategoryName(image.category_id)}
-                          {image.subcategory_id && ` • ${getSubcategoryName(image.subcategory_id)}`}
-                        </p>
-                        <p className="text-xs text-muted-foreground italic truncate" title={image.alt_text}>
-                          "{image.alt_text}"
-                        </p>
-                      </div>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleDeleteImage(image.id)}
-                        className="w-full text-xs"
-                      >
-                        <Trash2 className="mr-1 h-3 w-3" />
-                        Remove
-                      </Button>
-                    </div>
-                  ))}
+                <div className="space-y-6">
+                  {projects.map((project) => {
+                    const projectImages = getProjectImages(project.id);
+                    const thumbnail = getProjectThumbnail(project);
+
+                    return (
+                      <Card key={project.id} className="card-elegant overflow-hidden">
+                        <CardHeader className="pb-4">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                            <div className="flex items-start gap-4">
+                              {thumbnail ? (
+                                <img 
+                                  src={thumbnail} 
+                                  alt={project.title}
+                                  className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
+                                />
+                              ) : (
+                                <div className="w-20 h-20 bg-muted rounded-lg flex items-center justify-center flex-shrink-0">
+                                  <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                                </div>
+                              )}
+                              <div>
+                                <CardTitle className="text-lg">{project.title}</CardTitle>
+                                <CardDescription>
+                                  {getCategoryName(project.category_id)}
+                                  {project.subcategory_id && ` • ${getSubcategoryName(project.subcategory_id)}`}
+                                  {' • '}{projectImages.length} images
+                                </CardDescription>
+                                {project.description && (
+                                  <p className="text-sm text-muted-foreground mt-1">{project.description}</p>
+                                )}
+                              </div>
+                            </div>
+                            <Button 
+                              variant="destructive" 
+                              size="sm"
+                              onClick={() => handleDeleteProject(project.id)}
+                            >
+                              <Trash2 className="w-4 h-4 mr-1" />
+                              Delete Project
+                            </Button>
+                          </div>
+                        </CardHeader>
+                        
+                        {projectImages.length > 0 && (
+                          <CardContent className="pt-0">
+                            <p className="text-sm font-medium text-foreground mb-3">Project Images:</p>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                              {projectImages.map((image) => (
+                                <div 
+                                  key={image.id} 
+                                  className={`relative group rounded-lg overflow-hidden border-2 ${
+                                    project.thumbnail_image_id === image.id 
+                                      ? 'border-primary' 
+                                      : 'border-transparent'
+                                  }`}
+                                >
+                                  <img
+                                    src={image.image_url}
+                                    alt={image.alt_text}
+                                    className="w-full aspect-square object-cover"
+                                  />
+                                  {project.thumbnail_image_id === image.id && (
+                                    <div className="absolute top-1 left-1 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded flex items-center gap-1">
+                                      <Star className="w-3 h-3 fill-current" />
+                                      Thumb
+                                    </div>
+                                  )}
+                                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+                                    <Button
+                                      size="sm"
+                                      variant="secondary"
+                                      className="h-7 text-xs"
+                                      onClick={() => handleSetThumbnail(project.id, image.id)}
+                                    >
+                                      <Star className="w-3 h-3 mr-1" />
+                                      Set Thumb
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="destructive"
+                                      className="h-7 text-xs px-2"
+                                      onClick={() => handleDeleteImage(image.id)}
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        )}
+                      </Card>
+                    );
+                  })}
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

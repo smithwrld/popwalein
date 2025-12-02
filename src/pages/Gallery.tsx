@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
-import { Eye, ArrowRight, X, MapPin, Calendar, Users, CheckCircle, ChevronDown } from "lucide-react";
+import { Eye, ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import serviceCeiling from "@/assets/service-ceiling.jpg";
 
 interface Category {
   id: string;
@@ -26,39 +25,78 @@ interface Subcategory {
   description: string;
 }
 
+interface GalleryProject {
+  id: string;
+  title: string;
+  description: string | null;
+  category_id: string | null;
+  subcategory_id: string | null;
+  thumbnail_image_id: string | null;
+  display_order: number;
+}
+
 interface GalleryImage {
   id: string;
+  project_id: string | null;
   title: string;
   alt_text: string;
   image_url: string;
-  category_id: string;
-  subcategory_id: string | null;
   description: string;
 }
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeSubCategory, setActiveSubCategory] = useState("all");
-  const [selectedProject, setSelectedProject] = useState<GalleryImage | null>(null);
+  const [selectedProject, setSelectedProject] = useState<GalleryProject | null>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Database states
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [projects, setProjects] = useState<GalleryProject[]>([]);
   const [images, setImages] = useState<GalleryImage[]>([]);
+  const [tableExists, setTableExists] = useState(true);
 
   // Fetch data from Supabase
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [categoriesRes, subcategoriesRes, imagesRes] = await Promise.all([
+        const [categoriesRes, subcategoriesRes] = await Promise.all([
           supabase.from('gallery_categories').select('*').order('display_order'),
           supabase.from('gallery_subcategories').select('*').order('display_order'),
-          supabase.from('gallery_images').select('*').order('display_order')
         ]);
 
         if (categoriesRes.data) setCategories(categoriesRes.data);
         if (subcategoriesRes.data) setSubcategories(subcategoriesRes.data);
-        if (imagesRes.data) setImages(imagesRes.data);
+
+        // Try to fetch projects
+        const projectsRes = await supabase
+          .from('gallery_projects' as any)
+          .select('*')
+          .order('display_order');
+
+        if (projectsRes.error) {
+          if (projectsRes.error.message.includes('does not exist')) {
+            setTableExists(false);
+            setProjects([]);
+          }
+        } else {
+          setTableExists(true);
+          setProjects((projectsRes.data || []) as unknown as GalleryProject[]);
+        }
+
+        // Fetch images
+        const imagesRes = await supabase
+          .from('gallery_images')
+          .select('*')
+          .order('display_order');
+
+        if (imagesRes.data) {
+          setImages(imagesRes.data.map((img: any) => ({
+            ...img,
+            project_id: img.project_id || null
+          })) as GalleryImage[]);
+        }
       } catch (error) {
         console.error('Error fetching gallery data:', error);
       }
@@ -67,16 +105,9 @@ const Gallery = () => {
     fetchData();
 
     // Set up real-time subscriptions
-    const categoriesChannel = supabase
-      .channel('gallery_categories_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery_categories' }, () => {
-        fetchData();
-      })
-      .subscribe();
-
-    const subcategoriesChannel = supabase
-      .channel('gallery_subcategories_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery_subcategories' }, () => {
+    const projectsChannel = supabase
+      .channel('gallery_projects_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery_projects' }, () => {
         fetchData();
       })
       .subscribe();
@@ -89,15 +120,14 @@ const Gallery = () => {
       .subscribe();
 
     return () => {
-      supabase.removeChannel(categoriesChannel);
-      supabase.removeChannel(subcategoriesChannel);
+      supabase.removeChannel(projectsChannel);
       supabase.removeChannel(imagesChannel);
     };
   }, []);
 
   // Create category options with "All" option
   const categoryOptions = [
-    { id: "all", name: "All Ceiling Types" },
+    { id: "all", name: "All Categories" },
     ...categories
   ];
 
@@ -107,41 +137,39 @@ const Gallery = () => {
     
     const filteredSubs = subcategories.filter(sub => sub.category_id === activeCategory);
     return [
-      { id: "all", name: "All Ceilings" },
+      { id: "all", name: "All Types" },
       ...filteredSubs
     ];
   };
 
   // Get category name
-  const getCategoryName = (categoryId: string) => {
-    if (categoryId === "all") return "All Ceiling Types";
+  const getCategoryName = (categoryId: string | null) => {
+    if (!categoryId || categoryId === "all") return "All Categories";
     return categories.find(cat => cat.id === categoryId)?.name || "Unknown Category";
   };
 
   // Get subcategory name
-  const getSubcategoryName = (subcategoryId: string) => {
-    if (subcategoryId === "all") return "All Ceilings";
-    return subcategories.find(sub => sub.id === subcategoryId)?.name || "Unknown Subcategory";
+  const getSubcategoryName = (subcategoryId: string | null) => {
+    if (!subcategoryId || subcategoryId === "all") return "All Types";
+    return subcategories.find(sub => sub.id === subcategoryId)?.name || "Unknown";
   };
 
-  // Filter images based on selected category and subcategory
-  const filteredImages = (() => {
-    let filtered = images;
+  // Filter projects based on selected category and subcategory
+  const filteredProjects = (() => {
+    let filtered = projects;
     
-    // Filter by main category
     if (activeCategory !== "all") {
-      filtered = filtered.filter(image => image.category_id === activeCategory);
+      filtered = filtered.filter(project => project.category_id === activeCategory);
     }
     
-    // Filter by sub-category
     if (activeSubCategory !== "all") {
-      filtered = filtered.filter(image => image.subcategory_id === activeSubCategory);
+      filtered = filtered.filter(project => project.subcategory_id === activeSubCategory);
     }
     
     return filtered;
   })();
 
-  // Check if category supports subcategories (you can modify this logic based on your needs)
+  // Check if category supports subcategories
   const categorySupportsSubcategories = (categoryId: string) => {
     if (categoryId === "all") return false;
     return subcategories.some(sub => sub.category_id === categoryId);
@@ -149,7 +177,54 @@ const Gallery = () => {
 
   const handleCategoryChange = (categoryId: string) => {
     setActiveCategory(categoryId);
-    setActiveSubCategory("all"); // Reset sub-category when main category changes
+    setActiveSubCategory("all");
+  };
+
+  // Get images for a specific project
+  const getProjectImages = (projectId: string) => {
+    return images.filter(img => img.project_id === projectId);
+  };
+
+  // Get project thumbnail
+  const getProjectThumbnail = (project: GalleryProject) => {
+    if (project.thumbnail_image_id) {
+      const thumbImage = images.find(img => img.id === project.thumbnail_image_id);
+      if (thumbImage) return thumbImage.image_url;
+    }
+    const projectImages = getProjectImages(project.id);
+    return projectImages[0]?.image_url || null;
+  };
+
+  // Get sorted project images (thumbnail first)
+  const getSortedProjectImages = (project: GalleryProject) => {
+    const projectImages = getProjectImages(project.id);
+    if (!project.thumbnail_image_id) return projectImages;
+    
+    const thumbImage = projectImages.find(img => img.id === project.thumbnail_image_id);
+    const otherImages = projectImages.filter(img => img.id !== project.thumbnail_image_id);
+    
+    return thumbImage ? [thumbImage, ...otherImages] : projectImages;
+  };
+
+  const handleProjectClick = (project: GalleryProject) => {
+    setSelectedProject(project);
+    setCurrentImageIndex(0);
+  };
+
+  const handlePrevImage = () => {
+    if (!selectedProject) return;
+    const projectImages = getSortedProjectImages(selectedProject);
+    setCurrentImageIndex(prev => 
+      prev === 0 ? projectImages.length - 1 : prev - 1
+    );
+  };
+
+  const handleNextImage = () => {
+    if (!selectedProject) return;
+    const projectImages = getSortedProjectImages(selectedProject);
+    setCurrentImageIndex(prev => 
+      prev === projectImages.length - 1 ? 0 : prev + 1
+    );
   };
 
   return (
@@ -194,7 +269,7 @@ const Gallery = () => {
                 "addressCountry": "IN"
               }
             },
-            "numberOfItems": `${images.length}`,
+            "numberOfItems": `${projects.length}`,
             "about": [
               "P.O.P Services",
               "Ceiling Design", 
@@ -227,9 +302,9 @@ const Gallery = () => {
         <div className="container-curved">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
+              { number: `${projects.length}+`, label: "Projects" },
               { number: `${images.length}+`, label: "Gallery Images" },
               { number: `${categories.length}+`, label: "Categories" },
-              { number: `${subcategories.length}+`, label: "Subcategories" },
               { number: "10+", label: "Years Experience" }
             ].map((stat, index) => (
               <div key={index} className="text-center animate-fade-up" style={{ animationDelay: `${index * 0.1}s` }}>
@@ -253,139 +328,255 @@ const Gallery = () => {
               Featured Projects
             </h2>
             
-            <div className="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto">
-              {/* Category Dropdown */}
-              <DropdownMenu>
-                 <DropdownMenuTrigger className="inline-flex items-center justify-center px-6 py-3 bg-card text-card-foreground border border-border rounded-curved font-medium hover:bg-accent hover:text-accent-foreground transition-colors min-w-[200px] z-50">
-                  {getCategoryName(activeCategory)}
-                  <ChevronDown className="ml-2 h-4 w-4" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-popover border border-border shadow-lg z-50">
-                  {categoryOptions.map((category) => (
-                    <DropdownMenuItem
-                      key={category.id}
-                      onClick={() => handleCategoryChange(category.id)}
-                      className={`cursor-pointer ${
-                        activeCategory === category.id
-                          ? "bg-accent text-accent-foreground font-medium"
-                          : "hover:bg-accent hover:text-accent-foreground"
-                      }`}
-                    >
-                      {category.name}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Subcategory Dropdown - Only show if category has subcategories */}
-              {categorySupportsSubcategories(activeCategory) && (
+            {tableExists && (
+              <div className="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto">
+                {/* Category Dropdown */}
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="inline-flex items-center justify-center px-6 py-3 bg-card text-card-foreground border border-border rounded-curved font-medium hover:bg-accent hover:text-accent-foreground transition-colors min-w-[200px] z-50">
-                    {getSubcategoryName(activeSubCategory)}
+                   <DropdownMenuTrigger className="inline-flex items-center justify-center px-6 py-3 bg-card text-card-foreground border border-border rounded-curved font-medium hover:bg-accent hover:text-accent-foreground transition-colors min-w-[200px] z-50">
+                    {getCategoryName(activeCategory)}
                     <ChevronDown className="ml-2 h-4 w-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56 bg-popover border border-border shadow-lg z-50">
-                    {getSubcategoryOptions().map((subCategory) => (
+                    {categoryOptions.map((category) => (
                       <DropdownMenuItem
-                        key={subCategory.id}
-                        onClick={() => setActiveSubCategory(subCategory.id)}
+                        key={category.id}
+                        onClick={() => handleCategoryChange(category.id)}
                         className={`cursor-pointer ${
-                          activeSubCategory === subCategory.id
+                          activeCategory === category.id
                             ? "bg-accent text-accent-foreground font-medium"
                             : "hover:bg-accent hover:text-accent-foreground"
                         }`}
                       >
-                        {subCategory.name}
+                        {category.name}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-              )}
-            </div>
-          </div>
 
-          {/* Gallery Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredImages.length === 0 ? (
-              <div className="col-span-full text-center py-12">
-                <div className="text-muted-foreground">
-                  <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg">No images found for the selected filters.</p>
-                  <p className="text-sm mt-2">Try selecting different categories or check back later.</p>
-                </div>
+                {/* Subcategory Dropdown - Only show if category has subcategories */}
+                {categorySupportsSubcategories(activeCategory) && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="inline-flex items-center justify-center px-6 py-3 bg-card text-card-foreground border border-border rounded-curved font-medium hover:bg-accent hover:text-accent-foreground transition-colors min-w-[200px] z-50">
+                      {getSubcategoryName(activeSubCategory)}
+                      <ChevronDown className="ml-2 h-4 w-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56 bg-popover border border-border shadow-lg z-50">
+                      {getSubcategoryOptions().map((subCategory) => (
+                        <DropdownMenuItem
+                          key={subCategory.id}
+                          onClick={() => setActiveSubCategory(subCategory.id)}
+                          className={`cursor-pointer ${
+                            activeSubCategory === subCategory.id
+                              ? "bg-accent text-accent-foreground font-medium"
+                              : "hover:bg-accent hover:text-accent-foreground"
+                          }`}
+                        >
+                          {subCategory.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
-            ) : (
-              filteredImages.map((image, index) => (
-                <div 
-                  key={image.id} 
-                  className="card-gallery animate-fade-up hover-scale cursor-pointer" 
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                  onClick={() => setSelectedProject(image)}
-                >
-                  <div className="relative group overflow-hidden">
-                    <img 
-                      src={image.image_url} 
-                      alt={image.alt_text}
-                      className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <div className="absolute bottom-4 left-4 right-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <div className="flex items-center justify-between text-primary-foreground">
-                          <span className="text-sm font-medium">View Details</span>
-                          <Eye className="w-5 h-5" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold text-foreground mb-2">
-                      {image.title}
-                    </h3>
-                    <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
-                      {image.description || image.alt_text}
-                    </p>
-                    
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Category:</span>
-                        <span className="text-foreground font-medium">{getCategoryName(image.category_id)}</span>
-                      </div>
-                      {image.subcategory_id && (
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Type:</span>
-                          <span className="text-foreground font-medium">{getSubcategoryName(image.subcategory_id)}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))
             )}
           </div>
+
+          {/* Setup Message */}
+          {!tableExists && (
+            <div className="text-center py-12 bg-muted/50 rounded-lg mb-8">
+              <Eye className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <p className="text-lg text-muted-foreground">Gallery is being set up.</p>
+              <p className="text-sm text-muted-foreground mt-2">Please check back soon for our project portfolio.</p>
+            </div>
+          )}
+
+          {/* Projects Grid */}
+          {tableExists && (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProjects.length === 0 ? (
+                <div className="col-span-full text-center py-12">
+                  <div className="text-muted-foreground">
+                    <Eye className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p className="text-lg">No projects found for the selected filters.</p>
+                    <p className="text-sm mt-2">Try selecting different categories or check back later.</p>
+                  </div>
+                </div>
+              ) : (
+                filteredProjects.map((project, index) => {
+                  const thumbnail = getProjectThumbnail(project);
+                  const imageCount = getProjectImages(project.id).length;
+
+                  return (
+                    <div 
+                      key={project.id} 
+                      className="card-gallery animate-fade-up hover-scale cursor-pointer" 
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                      onClick={() => handleProjectClick(project)}
+                    >
+                      <div className="relative group overflow-hidden">
+                        {thumbnail ? (
+                          <img 
+                            src={thumbnail} 
+                            alt={project.title}
+                            className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                        ) : (
+                          <div className="w-full h-64 bg-muted flex items-center justify-center">
+                            <Eye className="w-12 h-12 text-muted-foreground opacity-50" />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300">
+                          <div className="absolute bottom-4 left-4 right-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <div className="flex items-center justify-between text-primary-foreground">
+                              <span className="text-sm font-medium">View {imageCount} Photos</span>
+                              <Eye className="w-5 h-5" />
+                            </div>
+                          </div>
+                        </div>
+                        {/* Image count badge */}
+                        <div className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm text-foreground text-xs font-medium px-2 py-1 rounded-full">
+                          {imageCount} photos
+                        </div>
+                      </div>
+                      
+                      <div className="p-6">
+                        <h3 className="text-xl font-semibold text-foreground mb-2">
+                          {project.title}
+                        </h3>
+                        {project.description && (
+                          <p className="text-muted-foreground mb-4 text-sm leading-relaxed line-clamp-2">
+                            {project.description}
+                          </p>
+                        )}
+                        
+                        <div className="space-y-2 text-sm">
+                          {project.category_id && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Category:</span>
+                              <span className="text-foreground font-medium">{getCategoryName(project.category_id)}</span>
+                            </div>
+                          )}
+                          {project.subcategory_id && (
+                            <div className="flex justify-between">
+                              <span className="text-muted-foreground">Type:</span>
+                              <span className="text-foreground font-medium">{getSubcategoryName(project.subcategory_id)}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Project Detail Modal - Simplified to show only image and title */}
+      {/* Project Images Modal */}
       <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-          {selectedProject && (
-            <div className="relative">
-              {/* Image */}
-              <img 
-                src={selectedProject.image_url} 
-                alt={selectedProject.alt_text}
-                className="w-full h-auto max-h-[80vh] object-contain"
-              />
-              
-              {/* Title overlay */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                <h2 className="text-2xl font-bold text-white">
-                  {selectedProject.title}
-                </h2>
+        <DialogContent className="max-w-5xl max-h-[95vh] p-0 overflow-hidden">
+          {selectedProject && (() => {
+            const projectImages = getSortedProjectImages(selectedProject);
+            const currentImage = projectImages[currentImageIndex];
+
+            return (
+              <div className="relative">
+                {/* Main Image */}
+                <div className="relative bg-black">
+                  {currentImage ? (
+                    <img 
+                      src={currentImage.image_url} 
+                      alt={currentImage.alt_text}
+                      className="w-full h-[70vh] object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-[70vh] flex items-center justify-center text-muted-foreground">
+                      No images in this project
+                    </div>
+                  )}
+                  
+                  {/* Navigation Arrows */}
+                  {projectImages.length > 1 && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 text-foreground h-12 w-12"
+                        onClick={handlePrevImage}
+                      >
+                        <ChevronLeft className="h-8 w-8" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/80 text-foreground h-12 w-12"
+                        onClick={handleNextImage}
+                      >
+                        <ChevronRight className="h-8 w-8" />
+                      </Button>
+                    </>
+                  )}
+
+                  {/* Image Counter */}
+                  {projectImages.length > 1 && (
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background/70 backdrop-blur-sm text-foreground text-sm px-4 py-2 rounded-full">
+                      {currentImageIndex + 1} / {projectImages.length}
+                    </div>
+                  )}
+                </div>
+
+                {/* Project Info */}
+                <div className="p-6 bg-card">
+                  <h2 className="text-2xl font-bold text-foreground mb-2">
+                    {selectedProject.title}
+                  </h2>
+                  {selectedProject.description && (
+                    <p className="text-muted-foreground">
+                      {selectedProject.description}
+                    </p>
+                  )}
+                  <div className="flex gap-4 mt-4 text-sm">
+                    {selectedProject.category_id && (
+                      <span className="text-muted-foreground">
+                        Category: <span className="text-foreground font-medium">{getCategoryName(selectedProject.category_id)}</span>
+                      </span>
+                    )}
+                    {selectedProject.subcategory_id && (
+                      <span className="text-muted-foreground">
+                        Type: <span className="text-foreground font-medium">{getSubcategoryName(selectedProject.subcategory_id)}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Thumbnail Strip */}
+                {projectImages.length > 1 && (
+                  <div className="bg-muted p-3 border-t">
+                    <div className="flex gap-2 overflow-x-auto pb-2">
+                      {projectImages.map((img, idx) => (
+                        <button
+                          key={img.id}
+                          onClick={() => setCurrentImageIndex(idx)}
+                          className={`flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-all ${
+                            idx === currentImageIndex 
+                              ? 'border-primary' 
+                              : 'border-transparent opacity-60 hover:opacity-100'
+                          }`}
+                        >
+                          <img 
+                            src={img.image_url} 
+                            alt={img.alt_text}
+                            className="w-full h-full object-cover"
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          )}
+            );
+          })()}
         </DialogContent>
       </Dialog>
 
@@ -404,8 +595,8 @@ const Gallery = () => {
                 Start Your Project
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
-              <Link to="/contact" className="btn-secondary">
-                Discuss Ideas
+              <Link to="/contact" className="btn-secondary whitespace-nowrap inline-flex items-center justify-center">
+                Discuss Your Ideas
               </Link>
             </div>
           </div>
