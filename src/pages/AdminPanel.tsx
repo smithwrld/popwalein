@@ -406,7 +406,21 @@ const AdminPanel = () => {
             </CardHeader>
             <CardContent>
               <pre className="text-xs bg-muted p-4 rounded-lg overflow-x-auto whitespace-pre-wrap">
-{`-- Create gallery_projects table
+{`-- Step 1: Create a security definer function for admin check
+CREATE OR REPLACE FUNCTION public.is_admin(_user_id uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT COALESCE(
+    (SELECT is_admin FROM public.profiles WHERE id = _user_id),
+    false
+  )
+$$;
+
+-- Step 2: Create gallery_projects table
 CREATE TABLE IF NOT EXISTS public.gallery_projects (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title TEXT NOT NULL,
@@ -419,20 +433,33 @@ CREATE TABLE IF NOT EXISTS public.gallery_projects (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Add project_id column to gallery_images
+-- Step 3: Add project_id column to gallery_images
 ALTER TABLE public.gallery_images 
 ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES public.gallery_projects(id) ON DELETE CASCADE;
 
--- Enable RLS
+-- Step 4: Enable RLS
 ALTER TABLE public.gallery_projects ENABLE ROW LEVEL SECURITY;
 
--- RLS policies
-CREATE POLICY "Anyone can view gallery projects" ON public.gallery_projects FOR SELECT TO public USING (true);
-CREATE POLICY "Admins can insert gallery projects" ON public.gallery_projects FOR INSERT TO authenticated WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.is_admin = true));
-CREATE POLICY "Admins can update gallery projects" ON public.gallery_projects FOR UPDATE TO authenticated USING (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.is_admin = true));
-CREATE POLICY "Admins can delete gallery projects" ON public.gallery_projects FOR DELETE TO authenticated USING (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = auth.uid() AND profiles.is_admin = true));
+-- Step 5: Drop existing policies if they exist (run these first)
+DROP POLICY IF EXISTS "Anyone can view gallery projects" ON public.gallery_projects;
+DROP POLICY IF EXISTS "Admins can insert gallery projects" ON public.gallery_projects;
+DROP POLICY IF EXISTS "Admins can update gallery projects" ON public.gallery_projects;
+DROP POLICY IF EXISTS "Admins can delete gallery projects" ON public.gallery_projects;
 
--- Create indexes
+-- Step 6: Create RLS policies using the security definer function
+CREATE POLICY "Anyone can view gallery projects" ON public.gallery_projects 
+FOR SELECT TO public USING (true);
+
+CREATE POLICY "Admins can insert gallery projects" ON public.gallery_projects 
+FOR INSERT TO authenticated WITH CHECK (public.is_admin(auth.uid()));
+
+CREATE POLICY "Admins can update gallery projects" ON public.gallery_projects 
+FOR UPDATE TO authenticated USING (public.is_admin(auth.uid()));
+
+CREATE POLICY "Admins can delete gallery projects" ON public.gallery_projects 
+FOR DELETE TO authenticated USING (public.is_admin(auth.uid()));
+
+-- Step 7: Create indexes
 CREATE INDEX IF NOT EXISTS idx_gallery_images_project_id ON public.gallery_images(project_id);
 CREATE INDEX IF NOT EXISTS idx_gallery_projects_category_id ON public.gallery_projects(category_id);`}
               </pre>
