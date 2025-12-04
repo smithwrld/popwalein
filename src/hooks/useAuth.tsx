@@ -32,19 +32,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const checkAdminRole = async (userId: string): Promise<boolean> => {
     try {
-      // Use raw query since user_roles table may not be in generated types
-      const { data, error } = await supabase
+      // First try user_roles table (preferred method)
+      const { data: roleData, error: roleError } = await supabase
         .from('user_roles' as any)
         .select('role')
         .eq('user_id', userId)
         .eq('role', 'admin')
         .maybeSingle();
       
-      if (error) {
-        console.error('Error checking admin role:', error);
-        return false;
+      // If user_roles table exists and has data, use it
+      if (!roleError && roleData) {
+        return true;
       }
-      return !!data;
+      
+      // Fallback to profiles.is_admin if user_roles doesn't exist or has no entry
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('user_id', userId)
+        .single();
+      
+      if (!profileError && profileData?.is_admin) {
+        return true;
+      }
+      
+      return false;
     } catch (error) {
       console.error('Error checking admin role:', error);
       return false;
