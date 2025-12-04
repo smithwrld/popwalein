@@ -49,7 +49,7 @@ interface GalleryImage {
 }
 
 const AdminPanel = () => {
-  const { user, profile, loading, signOut } = useAuth();
+  const { user, profile, isAdmin, loading, signOut } = useAuth();
   const { toast } = useToast();
   
   const [categories, setCategories] = useState<Category[]>([]);
@@ -128,12 +128,12 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
-    if (user && profile?.is_admin) {
+    if (user && isAdmin) {
       fetchData();
     } else {
       setLoadingData(false);
     }
-  }, [user, profile]);
+  }, [user, isAdmin]);
 
   if (loading) {
     return (
@@ -143,7 +143,7 @@ const AdminPanel = () => {
     );
   }
 
-  if (!user || !profile?.is_admin) {
+  if (!user || !isAdmin) {
     return <Navigate to="/auth" replace />;
   }
 
@@ -406,21 +406,51 @@ const AdminPanel = () => {
             </CardHeader>
             <CardContent>
               <pre className="text-xs bg-muted p-4 rounded-lg overflow-x-auto whitespace-pre-wrap">
-{`-- Step 1: Create a security definer function for admin check
-CREATE OR REPLACE FUNCTION public.is_admin(_user_id uuid)
+{`-- =============================================
+-- COMPLETE ADMIN SETUP FOR admin@popwale.com
+-- Run ALL of this in Supabase SQL Editor
+-- =============================================
+
+-- Step 1: Create app_role enum type
+DO $$ BEGIN
+    CREATE TYPE public.app_role AS ENUM ('admin', 'moderator', 'user');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+-- Step 2: Create user_roles table
+CREATE TABLE IF NOT EXISTS public.user_roles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    role app_role NOT NULL,
+    UNIQUE (user_id, role)
+);
+
+-- Step 3: Enable RLS on user_roles
+ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
+
+-- Step 4: Create has_role security definer function
+CREATE OR REPLACE FUNCTION public.has_role(_user_id uuid, _role app_role)
 RETURNS boolean
 LANGUAGE sql
 STABLE
 SECURITY DEFINER
 SET search_path = public
 AS $$
-  SELECT COALESCE(
-    (SELECT is_admin FROM public.profiles WHERE id = _user_id),
-    false
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.user_roles
+    WHERE user_id = _user_id
+      AND role = _role
   )
 $$;
 
--- Step 2: Create gallery_projects table
+-- Step 5: Grant admin role to admin@popwale.com
+INSERT INTO public.user_roles (user_id, role)
+SELECT id, 'admin'::app_role FROM auth.users WHERE email = 'admin@popwale.com'
+ON CONFLICT (user_id, role) DO NOTHING;
+
+-- Step 6: Create gallery_projects table
 CREATE TABLE IF NOT EXISTS public.gallery_projects (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title TEXT NOT NULL,
@@ -433,35 +463,40 @@ CREATE TABLE IF NOT EXISTS public.gallery_projects (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Step 3: Add project_id column to gallery_images
+-- Step 7: Add project_id column to gallery_images
 ALTER TABLE public.gallery_images 
 ADD COLUMN IF NOT EXISTS project_id UUID REFERENCES public.gallery_projects(id) ON DELETE CASCADE;
 
--- Step 4: Enable RLS
+-- Step 8: Enable RLS on gallery_projects
 ALTER TABLE public.gallery_projects ENABLE ROW LEVEL SECURITY;
 
--- Step 5: Drop existing policies if they exist (run these first)
+-- Step 9: Drop existing policies
 DROP POLICY IF EXISTS "Anyone can view gallery projects" ON public.gallery_projects;
 DROP POLICY IF EXISTS "Admins can insert gallery projects" ON public.gallery_projects;
 DROP POLICY IF EXISTS "Admins can update gallery projects" ON public.gallery_projects;
 DROP POLICY IF EXISTS "Admins can delete gallery projects" ON public.gallery_projects;
 
--- Step 6: Create RLS policies using the security definer function
+-- Step 10: Create RLS policies using has_role function
 CREATE POLICY "Anyone can view gallery projects" ON public.gallery_projects 
 FOR SELECT TO public USING (true);
 
 CREATE POLICY "Admins can insert gallery projects" ON public.gallery_projects 
-FOR INSERT TO authenticated WITH CHECK (public.is_admin(auth.uid()));
+FOR INSERT TO authenticated WITH CHECK (public.has_role(auth.uid(), 'admin'));
 
 CREATE POLICY "Admins can update gallery projects" ON public.gallery_projects 
-FOR UPDATE TO authenticated USING (public.is_admin(auth.uid()));
+FOR UPDATE TO authenticated USING (public.has_role(auth.uid(), 'admin'));
 
 CREATE POLICY "Admins can delete gallery projects" ON public.gallery_projects 
-FOR DELETE TO authenticated USING (public.is_admin(auth.uid()));
+FOR DELETE TO authenticated USING (public.has_role(auth.uid(), 'admin'));
 
--- Step 7: Create indexes
+-- Step 11: Create indexes
 CREATE INDEX IF NOT EXISTS idx_gallery_images_project_id ON public.gallery_images(project_id);
-CREATE INDEX IF NOT EXISTS idx_gallery_projects_category_id ON public.gallery_projects(category_id);`}
+CREATE INDEX IF NOT EXISTS idx_gallery_projects_category_id ON public.gallery_projects(category_id);
+
+-- Step 12: RLS policies for user_roles table
+DROP POLICY IF EXISTS "Users can view own roles" ON public.user_roles;
+CREATE POLICY "Users can view own roles" ON public.user_roles
+FOR SELECT TO authenticated USING (user_id = auth.uid());`}
               </pre>
               <Button className="mt-4" onClick={() => fetchData()}>
                 Refresh After Running SQL

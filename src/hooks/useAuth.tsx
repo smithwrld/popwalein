@@ -16,6 +16,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   profile: Profile | null;
+  isAdmin: boolean;
   loading: boolean;
   signOut: () => Promise<void>;
 }
@@ -26,7 +27,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const checkAdminRole = async (userId: string): Promise<boolean> => {
+    try {
+      // Use raw query since user_roles table may not be in generated types
+      const { data, error } = await supabase
+        .from('user_roles' as any)
+        .select('role')
+        .eq('user_id', userId)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error checking admin role:', error);
+        return false;
+      }
+      return !!data;
+    } catch (error) {
+      console.error('Error checking admin role:', error);
+      return false;
+    }
+  };
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -39,6 +62,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Defer profile fetching to prevent deadlocks
           setTimeout(async () => {
             try {
+              // Check admin role from user_roles table
+              const adminStatus = await checkAdminRole(session.user.id);
+              setIsAdmin(adminStatus);
+
               const { data: profileData, error } = await supabase
                 .from('profiles')
                 .select('*')
@@ -60,6 +87,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }, 0);
         } else {
           setProfile(null);
+          setIsAdmin(false);
           setLoading(false);
         }
       }
@@ -73,6 +101,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setSession(session);
           setUser(session.user);
           
+          // Check admin role from user_roles table
+          const adminStatus = await checkAdminRole(session.user.id);
+          setIsAdmin(adminStatus);
+
           // Fetch profile for existing session
           const { data: profileData, error } = await supabase
             .from('profiles')
@@ -105,6 +137,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
       setSession(null);
       setProfile(null);
+      setIsAdmin(false);
       
       // Force page reload for clean state
       window.location.href = '/auth';
@@ -117,6 +150,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     session,
     profile,
+    isAdmin,
     loading,
     signOut,
   };
