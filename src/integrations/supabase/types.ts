@@ -237,6 +237,38 @@ export type Database = {
         }
         Relationships: []
       }
+      project_seo_keywords: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          keyword: string
+          project_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          keyword: string
+          project_id: string
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          keyword?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_seo_keywords_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
