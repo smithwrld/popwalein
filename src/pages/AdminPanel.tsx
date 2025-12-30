@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Trash2, Upload, Image as ImageIcon, Plus, FolderOpen, Star } from 'lucide-react';
+import { Loader2, Trash2, Upload, Image as ImageIcon, Plus, FolderOpen, Star, Hash, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -48,6 +48,13 @@ interface GalleryImage {
   display_order: number;
 }
 
+interface SeoKeyword {
+  id: string;
+  project_id: string;
+  keyword: string;
+  created_at: string;
+}
+
 const AdminPanel = () => {
   const { user, profile, isAdmin, loading, signOut } = useAuth();
   const { toast } = useToast();
@@ -56,10 +63,12 @@ const AdminPanel = () => {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [projects, setProjects] = useState<GalleryProject[]>([]);
   const [images, setImages] = useState<GalleryImage[]>([]);
+  const [seoKeywords, setSeoKeywords] = useState<SeoKeyword[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [creatingProject, setCreatingProject] = useState(false);
   const [tableExists, setTableExists] = useState(true);
+  const [addingKeywords, setAddingKeywords] = useState(false);
 
   // Form states
   const [projectForm, setProjectForm] = useState({
@@ -71,6 +80,10 @@ const AdminPanel = () => {
 
   const [selectedProject, setSelectedProject] = useState<string>('');
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+  
+  // SEO Keywords form states
+  const [seoSelectedProject, setSeoSelectedProject] = useState<string>('');
+  const [keywordsInput, setKeywordsInput] = useState<string>('');
 
   const fetchData = async () => {
     try {
@@ -114,6 +127,16 @@ const AdminPanel = () => {
         ...img,
         project_id: img.project_id || null
       })) as GalleryImage[]);
+
+      // Fetch SEO keywords
+      const keywordsRes = await supabase
+        .from('project_seo_keywords' as any)
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!keywordsRes.error) {
+        setSeoKeywords((keywordsRes.data || []) as unknown as SeoKeyword[]);
+      }
 
     } catch (error: any) {
       console.error('Error in fetchData:', error);
@@ -362,6 +385,123 @@ const AdminPanel = () => {
     }
     const projectImages = getProjectImages(project.id);
     return projectImages[0]?.image_url || null;
+  };
+
+  const getProjectKeywords = (projectId: string) => {
+    return seoKeywords.filter(kw => kw.project_id === projectId);
+  };
+
+  const handleAddKeywords = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!seoSelectedProject) {
+      toast({
+        title: "Error",
+        description: "Please select a project first",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!keywordsInput.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter at least one keyword",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setAddingKeywords(true);
+    try {
+      // Parse keywords - split by newlines, commas, or # and clean up
+      const keywords = keywordsInput
+        .split(/[\n,]+/)
+        .map(kw => kw.trim().replace(/^#/, '').trim())
+        .filter(kw => kw.length > 0);
+
+      if (keywords.length === 0) {
+        toast({
+          title: "Error",
+          description: "No valid keywords found",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Insert keywords in batches
+      const keywordRecords = keywords.map(keyword => ({
+        project_id: seoSelectedProject,
+        keyword: keyword,
+        created_by: user?.id
+      }));
+
+      const { error } = await supabase
+        .from('project_seo_keywords' as any)
+        .insert(keywordRecords as any);
+
+      if (error) throw error;
+
+      setKeywordsInput('');
+      fetchData();
+      toast({
+        title: "Success",
+        description: `${keywords.length} keyword(s) added successfully`
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setAddingKeywords(false);
+    }
+  };
+
+  const handleDeleteKeyword = async (keywordId: string) => {
+    try {
+      const { error } = await supabase
+        .from('project_seo_keywords' as any)
+        .delete()
+        .eq('id', keywordId);
+
+      if (error) throw error;
+
+      fetchData();
+      toast({
+        title: "Success",
+        description: "Keyword deleted successfully"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDeleteAllProjectKeywords = async (projectId: string) => {
+    try {
+      const { error } = await supabase
+        .from('project_seo_keywords' as any)
+        .delete()
+        .eq('project_id', projectId);
+
+      if (error) throw error;
+
+      fetchData();
+      toast({
+        title: "Success",
+        description: "All keywords deleted for this project"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   if (loadingData) {
@@ -682,6 +822,110 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                     )}
                   </Button>
                 </form>
+              </CardContent>
+            </Card>
+
+            {/* SEO Keywords Section */}
+            <Card className="card-elegant">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Hash className="w-5 h-5" />
+                  SEO Keywords / Hashtags
+                </CardTitle>
+                <CardDescription>Add keywords/hashtags to projects for better SEO. Paste thousands at once!</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleAddKeywords} className="space-y-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="seo-select-project">Select Project *</Label>
+                      <Select value={seoSelectedProject} onValueChange={setSeoSelectedProject}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose a project" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {projects.map((project) => (
+                            <SelectItem key={project.id} value={project.id}>
+                              {project.title} ({getProjectKeywords(project.id).length} keywords)
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="keywords-input">Keywords / Hashtags *</Label>
+                      <Textarea
+                        id="keywords-input"
+                        placeholder="Paste keywords here - one per line, comma-separated, or with # prefix&#10;&#10;Examples:&#10;#falseceiling&#10;gypsumwork, popdesign&#10;stretch ceiling&#10;modern interiors"
+                        value={keywordsInput}
+                        onChange={(e) => setKeywordsInput(e.target.value)}
+                        rows={6}
+                        className="font-mono text-sm resize-y min-h-[120px]"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Supports newlines, commas, or # prefixes. All formats will be parsed automatically.
+                      </p>
+                    </div>
+                  </div>
+
+                  <Button type="submit" disabled={addingKeywords || !seoSelectedProject}>
+                    {addingKeywords ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Adding Keywords...
+                      </>
+                    ) : (
+                      <>
+                        <Hash className="mr-2 h-4 w-4" />
+                        Add Keywords
+                      </>
+                    )}
+                  </Button>
+                </form>
+
+                {/* Keywords Preview for Selected Project */}
+                {seoSelectedProject && (
+                  <div className="mt-6 pt-6 border-t border-border">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                      <h4 className="text-sm font-medium text-foreground">
+                        Keywords for: {projects.find(p => p.id === seoSelectedProject)?.title}
+                      </h4>
+                      {getProjectKeywords(seoSelectedProject).length > 0 && (
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleDeleteAllProjectKeywords(seoSelectedProject)}
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Delete All ({getProjectKeywords(seoSelectedProject).length})
+                        </Button>
+                      )}
+                    </div>
+                    
+                    {getProjectKeywords(seoSelectedProject).length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No keywords added yet.</p>
+                    ) : (
+                      <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto p-2 bg-muted/30 rounded-lg">
+                        {getProjectKeywords(seoSelectedProject).map((kw) => (
+                          <span 
+                            key={kw.id} 
+                            className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-primary/10 text-primary border border-primary/20 rounded-full group hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-colors"
+                          >
+                            #{kw.keyword}
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteKeyword(kw.id)}
+                              className="ml-1 hover:text-destructive"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
