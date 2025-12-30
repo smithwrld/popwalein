@@ -51,6 +51,7 @@ export type Database = {
           id: string
           image_url: string
           is_featured: boolean | null
+          project_id: string | null
           subcategory_id: string | null
           title: string
           updated_at: string
@@ -65,6 +66,7 @@ export type Database = {
           id?: string
           image_url: string
           is_featured?: boolean | null
+          project_id?: string | null
           subcategory_id?: string | null
           title: string
           updated_at?: string
@@ -79,6 +81,7 @@ export type Database = {
           id?: string
           image_url?: string
           is_featured?: boolean | null
+          project_id?: string | null
           subcategory_id?: string | null
           title?: string
           updated_at?: string
@@ -90,6 +93,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "gallery_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gallery_images_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_projects"
             referencedColumns: ["id"]
           },
           {
@@ -105,6 +115,57 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      gallery_projects: {
+        Row: {
+          category_id: string | null
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          subcategory_id: string | null
+          thumbnail_image_id: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          subcategory_id?: string | null
+          thumbnail_image_id?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          subcategory_id?: string | null
+          thumbnail_image_id?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_projects_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gallery_projects_subcategory_id_fkey"
+            columns: ["subcategory_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_subcategories"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -181,7 +242,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
