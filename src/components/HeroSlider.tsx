@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
 import gypsumCeilingImage from '../assets/hero-gypsum-ceiling.jpg';
@@ -18,6 +18,7 @@ const HeroSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [heroImages, setHeroImages] = useState<HeroImage[]>([]);
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
+  const [allImagesLoaded, setAllImagesLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Fetch hero images from database
@@ -50,42 +51,56 @@ const HeroSlider = () => {
   }, []);
 
   // Determine which slides to use
-  const slides = useMemo(
-    () =>
-      heroImages.length > 0
-        ? heroImages.map((img) => ({
-            id: img.id,
-            image: img.image_url,
-            alt: img.title || 'Hero Image',
-          }))
-        : fallbackSlides,
-    [heroImages]
-  );
+  const slides = heroImages.length > 0 
+    ? heroImages.map(img => ({ id: img.id, image: img.image_url, alt: img.title || 'Hero Image' }))
+    : fallbackSlides;
 
-  // Track load state for each slide (show ASAP; don't block on all images)
+  // Preload all images for instant switching
   useEffect(() => {
+    if (loading) return;
+
     setImagesLoaded(new Array(slides.length).fill(false));
-    setCurrentSlide(0);
-  }, [slides.length]);
+    setAllImagesLoaded(false);
 
-  const isCurrentSlideReady = !loading && Boolean(imagesLoaded[currentSlide]);
-  const areAllSlidesReady =
-    slides.length > 0 && imagesLoaded.length === slides.length && imagesLoaded.every(Boolean);
-
-  // Auto-slide (only advance once next image is ready)
-  useEffect(() => {
-    if (slides.length <= 1) return;
-    if (!Boolean(imagesLoaded[0])) return;
-
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => {
-        const next = (prev + 1) % slides.length;
-        return imagesLoaded[next] ? next : prev;
+    const preloadImages = slides.map((slide, index) => {
+      return new Promise<void>((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          setImagesLoaded(prev => {
+            const newLoaded = [...prev];
+            newLoaded[index] = true;
+            return newLoaded;
+          });
+          resolve();
+        };
+        img.onerror = () => {
+          console.warn(`Failed to load image: ${slide.image}`);
+          setImagesLoaded(prev => {
+            const newLoaded = [...prev];
+            newLoaded[index] = true;
+            return newLoaded;
+          });
+          resolve();
+        };
+        img.src = slide.image;
       });
+    });
+
+    Promise.all(preloadImages).then(() => {
+      setAllImagesLoaded(true);
+    });
+  }, [slides, loading]);
+
+  // Auto-slide functionality
+  useEffect(() => {
+    if (!allImagesLoaded || slides.length <= 1) return;
+    
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [slides.length, imagesLoaded]);
+  }, [slides.length, allImagesLoaded]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
