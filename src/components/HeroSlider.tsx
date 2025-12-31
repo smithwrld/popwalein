@@ -18,7 +18,7 @@ const HeroSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [heroImages, setHeroImages] = useState<HeroImage[]>([]);
   const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
-  const [allImagesLoaded, setAllImagesLoaded] = useState(false);
+
   const [loading, setLoading] = useState(true);
 
   // Fetch hero images from database
@@ -51,56 +51,20 @@ const HeroSlider = () => {
   }, []);
 
   // Determine which slides to use
-  const slides = heroImages.length > 0 
+  const slides = heroImages.length > 0
     ? heroImages.map(img => ({ id: img.id, image: img.image_url, alt: img.title || 'Hero Image' }))
     : fallbackSlides;
 
-  // Preload all images for instant switching
-  useEffect(() => {
-    if (loading) return;
-
-    setImagesLoaded(new Array(slides.length).fill(false));
-    setAllImagesLoaded(false);
-
-    const preloadImages = slides.map((slide, index) => {
-      return new Promise<void>((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-          setImagesLoaded(prev => {
-            const newLoaded = [...prev];
-            newLoaded[index] = true;
-            return newLoaded;
-          });
-          resolve();
-        };
-        img.onerror = () => {
-          console.warn(`Failed to load image: ${slide.image}`);
-          setImagesLoaded(prev => {
-            const newLoaded = [...prev];
-            newLoaded[index] = true;
-            return newLoaded;
-          });
-          resolve();
-        };
-        img.src = slide.image;
-      });
-    });
-
-    Promise.all(preloadImages).then(() => {
-      setAllImagesLoaded(true);
-    });
-  }, [slides, loading]);
-
   // Auto-slide functionality
   useEffect(() => {
-    if (!allImagesLoaded || slides.length <= 1) return;
-    
+    if (loading || slides.length <= 1) return;
+
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [slides.length, allImagesLoaded]);
+  }, [slides.length, loading]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -116,16 +80,16 @@ const HeroSlider = () => {
 
   return (
     <div className="relative w-full h-full overflow-hidden rounded-xl bg-muted">
-      {/* Loading skeleton */}
-      {(!allImagesLoaded || loading) && (
-        <div className="absolute inset-0 bg-gradient-to-br from-muted to-muted/80 animate-pulse flex items-center justify-center">
+      {/* Loading overlay only for initial data fetch */}
+      {loading && (
+        <div className="absolute inset-0 bg-gradient-to-br from-muted to-muted/80 animate-pulse flex items-center justify-center z-10">
           <div className="text-muted-foreground text-lg font-medium">Loading...</div>
         </div>
       )}
 
       {/* Slides Container */}
-      <div 
-        className={`flex transition-transform duration-700 ease-in-out h-full ${!allImagesLoaded ? 'opacity-0' : 'opacity-100'}`}
+      <div
+        className="flex transition-transform duration-700 ease-in-out h-full"
         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
       >
         {slides.map((slide, index) => (
@@ -133,15 +97,23 @@ const HeroSlider = () => {
             <img
               src={slide.image}
               alt={slide.alt}
-              className="w-full h-full object-cover"
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
+              className="w-full h-full object-cover transition-opacity duration-500"
+              loading={index === 0 ? "eager" : "lazy"}
+              onLoad={() => {
+                setImagesLoaded(prev => {
+                  const newLoaded = [...prev];
+                  newLoaded[index] = true;
+                  return newLoaded;
+                });
+              }}
               style={{
-                opacity: imagesLoaded[index] ? 1 : 0,
-                transition: 'opacity 0.3s ease-in-out'
+                opacity: imagesLoaded[index] ? 1 : 0
               }}
             />
+            {/* Fallback/Placeholder while image loads */}
+            {!imagesLoaded[index] && (
+              <div className="absolute inset-0 bg-muted animate-pulse" />
+            )}
             {/* Overlay */}
             <div className="absolute inset-0 bg-black/20"></div>
           </div>
@@ -149,17 +121,16 @@ const HeroSlider = () => {
       </div>
 
       {/* Navigation dots */}
-      {allImagesLoaded && slides.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      {slides.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                index === currentSlide 
-                  ? 'bg-white scale-110' 
-                  : 'bg-white/50 hover:bg-white/70'
-              }`}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
+                ? 'bg-white scale-110'
+                : 'bg-white/50 hover:bg-white/70'
+                }`}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}

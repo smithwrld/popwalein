@@ -68,7 +68,7 @@ interface HeroImage {
 const AdminPanel = () => {
   const { user, profile, isAdmin, loading, signOut } = useAuth();
   const { toast } = useToast();
-  
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [projects, setProjects] = useState<GalleryProject[]>([]);
@@ -93,7 +93,7 @@ const AdminPanel = () => {
 
   const [selectedProject, setSelectedProject] = useState<string>('');
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
-  
+
   // SEO Keywords form states
   const [seoSelectedProject, setSeoSelectedProject] = useState<string>('');
   const [keywordsInput, setKeywordsInput] = useState<string>('');
@@ -282,7 +282,7 @@ const AdminPanel = () => {
       for (let i = 0; i < selectedFiles.length; i++) {
         const file = selectedFiles[i];
         const imageUrl = await handleFileUpload(file);
-        
+
         const { error } = await supabase
           .from('gallery_images')
           .insert([{
@@ -298,14 +298,16 @@ const AdminPanel = () => {
         if (error) throw error;
       }
 
+      const uploadCount = selectedFiles.length;
+
       setSelectedFiles(null);
       const fileInput = document.getElementById('images-file') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-      
+
       fetchData();
       toast({
         title: "Success",
-        description: `${selectedFiles.length} image(s) uploaded successfully`
+        description: `${uploadCount} image(s) uploaded successfully`
       });
     } catch (error: any) {
       toast({
@@ -540,8 +542,8 @@ const AdminPanel = () => {
 
     setUploadingHero(true);
     try {
-      const maxOrder = heroImages.length > 0 
-        ? Math.max(...heroImages.map(h => h.display_order)) 
+      const maxOrder = heroImages.length > 0
+        ? Math.max(...heroImages.map(h => h.display_order))
         : 0;
 
       for (let i = 0; i < heroFiles.length; i++) {
@@ -571,14 +573,16 @@ const AdminPanel = () => {
         if (insertError) throw insertError;
       }
 
+      const uploadCount = heroFiles.length;
+
       setHeroFiles(null);
       const fileInput = document.getElementById('hero-file-input') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-      
+
       fetchData();
       toast({
         title: "Success",
-        description: `${heroFiles.length} hero image(s) uploaded successfully`
+        description: `${uploadCount} hero image(s) uploaded successfully`
       });
     } catch (error: any) {
       toast({
@@ -692,7 +696,7 @@ const AdminPanel = () => {
       </div>
 
       <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-8">
-        
+
         {/* Setup Warning */}
         {!tableExists && (
           <Card className="border-destructive bg-destructive/10">
@@ -704,7 +708,7 @@ const AdminPanel = () => {
             </CardHeader>
             <CardContent>
               <pre className="text-xs bg-muted p-4 rounded-lg overflow-x-auto whitespace-pre-wrap">
-{`-- =============================================
+                {`-- =============================================
 -- COMPLETE ADMIN SETUP FOR admin@popwale.com
 -- Run ALL of this in Supabase SQL Editor
 -- =============================================
@@ -806,103 +810,122 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
         {tableExists && (
           <>
             {/* Hero Images Section */}
-            <Card className="card-elegant border-primary/20">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sliders className="w-5 h-5" />
-                  Hero Section Images
-                </CardTitle>
-                <CardDescription>Manage hero slider images. Active images will be shown on the homepage.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Upload New Hero Images */}
-                <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
-                  <Label className="text-sm font-medium">Upload New Hero Images</Label>
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Input
-                      id="hero-file-input"
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={(e) => setHeroFiles(e.target.files)}
-                      className="flex-1"
-                    />
-                    <Button 
-                      onClick={handleUploadHeroImages} 
-                      disabled={uploadingHero || !heroFiles}
-                      className="whitespace-nowrap"
-                    >
-                      {uploadingHero ? (
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      ) : (
-                        <Plus className="w-4 h-4 mr-2" />
-                      )}
-                      Add Images
-                    </Button>
+            <Card className="bg-gradient-to-br from-card to-card/50 border-none shadow-xl shadow-black/5 rounded-[2rem] overflow-hidden">
+              <CardHeader className="pb-2 pt-8 px-8">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-3 text-2xl font-light tracking-tight text-foreground/90">
+                      <div className="p-2 bg-primary/10 rounded-xl">
+                        <Sliders className="w-5 h-5 text-primary" />
+                      </div>
+                      Hero Section Images
+                    </CardTitle>
+                    <CardDescription className="mt-2 text-base font-normal text-muted-foreground/80 pl-1">
+                      Manage hero slider images. Active images will be shown on the homepage.
+                    </CardDescription>
                   </div>
-                  <p className="text-xs text-muted-foreground">Select one or more images. Recommended size: 1920x1080px</p>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-8 p-8">
+                {/* Upload New Hero Images */}
+                <div className="p-6 bg-card rounded-[1.5rem] border border-dashed border-border/60 hover:border-primary/30 transition-colors">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-semibold text-foreground/80">Upload New Hero Images</Label>
+                      <span className="text-[10px] text-muted-foreground bg-muted/50 px-2 py-1 rounded-full">Rec: 1920x1080px</span>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+                      <Input
+                        id="hero-file-input"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={(e) => setHeroFiles(e.target.files)}
+                        className="flex-1 rounded-xl border-border/40 bg-muted/20 file:bg-primary/10 file:text-primary file:border-0 file:rounded-lg file:px-2 file:text-xs file:font-semibold hover:file:bg-primary/20 transition-all h-11"
+                      />
+                      <Button
+                        onClick={handleUploadHeroImages}
+                        disabled={uploadingHero || !heroFiles}
+                        className="rounded-xl px-6 bg-primary text-primary-foreground shadow-sm hover:shadow-md transition-all active:scale-95"
+                      >
+                        {uploadingHero ? (
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        ) : (
+                          <Plus className="w-4 h-4 mr-2" />
+                        )}
+                        Add Images
+                      </Button>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Existing Hero Images */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-medium">Current Hero Images ({heroImages.length})</Label>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-2 px-1">
+                    <Label className="text-sm font-semibold text-foreground/80">Current Hero Images</Label>
+                    <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-medium">{heroImages.length}</span>
+                  </div>
                   {heroImages.length === 0 ? (
                     <div className="text-center py-8 border border-dashed rounded-lg">
                       <ImageIcon className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
                       <p className="text-sm text-muted-foreground">No hero images yet. Upload some above.</p>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {heroImages.map((hero, index) => (
-                        <div 
-                          key={hero.id} 
-                          className={`relative group rounded-lg overflow-hidden border-2 transition-all ${
-                            hero.is_active ? 'border-primary shadow-md' : 'border-muted opacity-60'
-                          }`}
+                        <div
+                          key={hero.id}
+                          className="group relative bg-card rounded-[1.5rem] shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-border/40"
                         >
-                          <img 
-                            src={hero.image_url} 
-                            alt={hero.title || `Hero ${index + 1}`}
-                            className="w-full h-32 sm:h-40 object-cover"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                          
-                          {/* Order Badge */}
-                          <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                            <GripVertical className="w-3 h-3" />
-                            #{hero.display_order}
+                          {/* Image Container */}
+                          <div className="aspect-[16/10] relative overflow-hidden">
+                            <img
+                              src={hero.image_url}
+                              alt={hero.title || `Hero ${index + 1}`}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+
+                            {/* Status Badge floating top right */}
+                            <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-[10px] font-semibold tracking-wide backdrop-blur-md shadow-sm transition-colors uppercase ${hero.is_active
+                              ? 'bg-emerald-500/90 text-white'
+                              : 'bg-slate-500/80 text-white'
+                              }`}>
+                              {hero.is_active ? 'Active' : 'Inactive'}
+                            </div>
                           </div>
 
-                          {/* Status Badge */}
-                          <div className={`absolute top-2 right-2 text-xs px-2 py-1 rounded-full ${
-                            hero.is_active ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'
-                          }`}>
-                            {hero.is_active ? 'Active' : 'Inactive'}
-                          </div>
-
-                          {/* Controls */}
-                          <div className="absolute bottom-0 left-0 right-0 p-3 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <Switch 
+                          {/* Minimalistic Control Bar */}
+                          <div className="p-4 bg-card/50 backdrop-blur-sm border-t border-border/40 flex items-center justify-between gap-3">
+                            {/* Toggle Switch */}
+                            <div className="flex items-center gap-2.5">
+                              <Switch
                                 checked={hero.is_active}
                                 onCheckedChange={() => handleToggleHeroActive(hero.id, hero.is_active)}
-                                className="data-[state=checked]:bg-green-500"
+                                className="data-[state=checked]:bg-emerald-500 scale-90"
                               />
-                              <span className="text-xs text-white">Active</span>
+                              <span className="text-xs font-medium text-muted-foreground/80">Visible</span>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Input
-                                type="number"
-                                min="0"
-                                value={hero.display_order}
-                                onChange={(e) => handleUpdateHeroOrder(hero.id, parseInt(e.target.value) || 0)}
-                                className="w-16 h-8 text-xs bg-white/90 text-black"
-                                placeholder="Order"
-                              />
+
+                            <div className="flex items-center gap-3">
+                              {/* Order Input */}
+                              <div className="flex items-center gap-1.5 bg-muted/50 px-2 py-1 rounded-lg border border-border/20">
+                                <span className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider">Seq</span>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  value={hero.display_order}
+                                  onChange={(e) => handleUpdateHeroOrder(hero.id, parseInt(e.target.value) || 0)}
+                                  className="w-10 h-6 text-center text-xs bg-transparent border-none p-0 focus-visible:ring-0 font-medium [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                  placeholder="#"
+                                />
+                              </div>
+
+                              {/* Delete Action */}
                               <Button
-                                variant="destructive"
+                                variant="ghost"
                                 size="icon"
-                                className="h-8 w-8"
+                                className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                                 onClick={() => handleDeleteHeroImage(hero.id, hero.image_url)}
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -935,15 +958,15 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                         id="project-title"
                         placeholder="e.g., Modern Living Room Ceiling"
                         value={projectForm.title}
-                        onChange={(e) => setProjectForm({...projectForm, title: e.target.value})}
+                        onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
                         required
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="project-category">Category</Label>
-                      <Select 
-                        value={projectForm.category_id} 
-                        onValueChange={(value) => setProjectForm({...projectForm, category_id: value, subcategory_id: ''})}
+                      <Select
+                        value={projectForm.category_id}
+                        onValueChange={(value) => setProjectForm({ ...projectForm, category_id: value, subcategory_id: '' })}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select category (optional)" />
@@ -966,16 +989,16 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                         id="project-description"
                         placeholder="Describe this project..."
                         value={projectForm.description}
-                        onChange={(e) => setProjectForm({...projectForm, description: e.target.value})}
+                        onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
                         rows={3}
                       />
                     </div>
                     {projectForm.category_id && subcategories.filter(s => s.category_id === projectForm.category_id).length > 0 && (
                       <div className="space-y-2">
                         <Label htmlFor="project-subcategory">Subcategory</Label>
-                        <Select 
-                          value={projectForm.subcategory_id} 
-                          onValueChange={(value) => setProjectForm({...projectForm, subcategory_id: value})}
+                        <Select
+                          value={projectForm.subcategory_id}
+                          onValueChange={(value) => setProjectForm({ ...projectForm, subcategory_id: value })}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select subcategory (optional)" />
@@ -1041,8 +1064,8 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                   <div className="space-y-2">
                     <Label htmlFor="images-file">Choose Images *</Label>
                     <div className="relative">
-                      <label 
-                        htmlFor="images-file" 
+                      <label
+                        htmlFor="images-file"
                         className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-border rounded-lg cursor-pointer bg-background hover:bg-muted/50 hover:border-primary/50 transition-all duration-200"
                       >
                         <div className="flex flex-col items-center justify-center py-4">
@@ -1052,13 +1075,13 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                           </p>
                           <p className="text-xs text-muted-foreground">PNG, JPG, GIF up to 10MB each</p>
                         </div>
-                        <input 
-                          id="images-file" 
-                          type="file" 
+                        <input
+                          id="images-file"
+                          type="file"
                           accept="image/*"
                           multiple
                           onChange={(e) => setSelectedFiles(e.target.files)}
-                          className="hidden" 
+                          className="hidden"
                         />
                       </label>
                     </div>
@@ -1162,8 +1185,8 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                         Keywords for: {projects.find(p => p.id === seoSelectedProject)?.title}
                       </h4>
                       {getProjectKeywords(seoSelectedProject).length > 0 && (
-                        <Button 
-                          variant="destructive" 
+                        <Button
+                          variant="destructive"
                           size="sm"
                           onClick={() => handleDeleteAllProjectKeywords(seoSelectedProject)}
                         >
@@ -1172,14 +1195,14 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                         </Button>
                       )}
                     </div>
-                    
+
                     {getProjectKeywords(seoSelectedProject).length === 0 ? (
                       <p className="text-sm text-muted-foreground">No keywords added yet.</p>
                     ) : (
                       <div className="flex flex-wrap gap-2 max-h-64 overflow-y-auto p-2 bg-muted/30 rounded-lg">
                         {getProjectKeywords(seoSelectedProject).map((kw) => (
-                          <span 
-                            key={kw.id} 
+                          <span
+                            key={kw.id}
                             className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-primary/10 text-primary border border-primary/20 rounded-full group hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-colors"
                           >
                             #{kw.keyword}
@@ -1225,8 +1248,8 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                             <div className="flex items-start gap-4">
                               {thumbnail ? (
-                                <img 
-                                  src={thumbnail} 
+                                <img
+                                  src={thumbnail}
                                   alt={project.title}
                                   className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
                                 />
@@ -1247,8 +1270,8 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                                 )}
                               </div>
                             </div>
-                            <Button 
-                              variant="destructive" 
+                            <Button
+                              variant="destructive"
                               size="sm"
                               onClick={() => handleDeleteProject(project.id)}
                             >
@@ -1257,19 +1280,18 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
                             </Button>
                           </div>
                         </CardHeader>
-                        
+
                         {projectImages.length > 0 && (
                           <CardContent className="pt-0">
                             <p className="text-sm font-medium text-foreground mb-3">Project Images:</p>
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                               {projectImages.map((image) => (
-                                <div 
-                                  key={image.id} 
-                                  className={`relative group rounded-lg overflow-hidden border-2 ${
-                                    project.thumbnail_image_id === image.id 
-                                      ? 'border-primary' 
-                                      : 'border-transparent'
-                                  }`}
+                                <div
+                                  key={image.id}
+                                  className={`relative group rounded-lg overflow-hidden border-2 ${project.thumbnail_image_id === image.id
+                                    ? 'border-primary'
+                                    : 'border-transparent'
+                                    }`}
                                 >
                                   <img
                                     src={image.image_url}
