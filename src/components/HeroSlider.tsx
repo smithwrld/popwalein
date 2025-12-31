@@ -1,42 +1,75 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import gypsumCeilingImage from '../assets/hero-gypsum-ceiling.jpg';
+
+interface HeroImage {
+  id: string;
+  image_url: string;
+  title: string | null;
+  subtitle: string | null;
+  display_order: number;
+  is_active: boolean;
+}
+
+// Fallback slides in case database is empty
+const fallbackSlides = [
+  { id: '1', image: gypsumCeilingImage, alt: 'Elevate Your Interior Luxury' },
+  { id: '2', image: '/uploads/gridceiling.jpg', alt: 'Grid Ceiling Installation' },
+  { id: '3', image: '/uploads/soffitpanel.jpg', alt: 'Soffit Panel Installation' },
+  { id: '4', image: '/uploads/stretchceiling.png', alt: 'Stretch Ceiling Installation' },
+  { id: '5', image: '/uploads/punningwork.jpeg', alt: 'Punning Work' }
+];
 
 const HeroSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([false, false, false, false]);
+  const [heroImages, setHeroImages] = useState<HeroImage[]>([]);
+  const [imagesLoaded, setImagesLoaded] = useState<boolean[]>([]);
   const [allImagesLoaded, setAllImagesLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const slides = [
-    {
-      id: 1,
-      image: gypsumCeilingImage,
-      alt: 'Elevate Your Interior Luxury'
-    },
-    {
-      id: 2,
-      image: '/uploads/gridceiling.jpg  ',
-      alt: 'Grid Ceiling Installation'
-    },
-    {
-      id: 3,
-      image: '/uploads/soffitpanel.jpg',
-      alt: 'Soffit Panel Installation'
-    },
-    {
-      id: 4,
-      image: '/uploads/stretchceiling.png',
-      alt: 'Stretch Ceiling Installation'
-    },
-    {
-      id: 5,
-      image: '/uploads/punningwork.jpeg',
-      alt: 'Punning Work'
-    }
-  ];
+  // Fetch hero images from database
+  useEffect(() => {
+    const fetchHeroImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('hero_images' as any)
+          .select('*')
+          .eq('is_active', true)
+          .order('display_order');
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          setHeroImages(data as unknown as HeroImage[]);
+          setImagesLoaded(new Array(data.length).fill(false));
+        } else {
+          // Use fallback if no images in database
+          setHeroImages([]);
+        }
+      } catch (error) {
+        console.error('Error fetching hero images:', error);
+        setHeroImages([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeroImages();
+  }, []);
+
+  // Determine which slides to use
+  const slides = heroImages.length > 0 
+    ? heroImages.map(img => ({ id: img.id, image: img.image_url, alt: img.title || 'Hero Image' }))
+    : fallbackSlides;
 
   // Preload all images for instant switching
   useEffect(() => {
+    if (loading) return;
+
+    setImagesLoaded(new Array(slides.length).fill(false));
+    setAllImagesLoaded(false);
+
     const preloadImages = slides.map((slide, index) => {
       return new Promise<void>((resolve) => {
         const img = new Image();
@@ -52,7 +85,7 @@ const HeroSlider = () => {
           console.warn(`Failed to load image: ${slide.image}`);
           setImagesLoaded(prev => {
             const newLoaded = [...prev];
-            newLoaded[index] = true; // Mark as loaded even if failed to prevent infinite loading
+            newLoaded[index] = true;
             return newLoaded;
           });
           resolve();
@@ -64,15 +97,15 @@ const HeroSlider = () => {
     Promise.all(preloadImages).then(() => {
       setAllImagesLoaded(true);
     });
-  }, [slides]);
+  }, [slides, loading]);
 
-  // Auto-slide functionality - only start after images are loaded
+  // Auto-slide functionality
   useEffect(() => {
-    if (!allImagesLoaded) return;
+    if (!allImagesLoaded || slides.length <= 1) return;
     
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000); // Change slide every 5 seconds
+    }, 5000);
 
     return () => clearInterval(timer);
   }, [slides.length, allImagesLoaded]);
@@ -91,8 +124,8 @@ const HeroSlider = () => {
 
   return (
     <div className="relative w-full h-full overflow-hidden rounded-xl bg-muted">
-      {/* Loading skeleton - shown while images are loading */}
-      {!allImagesLoaded && (
+      {/* Loading skeleton */}
+      {(!allImagesLoaded || loading) && (
         <div className="absolute inset-0 bg-gradient-to-br from-muted to-muted/80 animate-pulse flex items-center justify-center">
           <div className="text-muted-foreground text-lg font-medium">Loading...</div>
         </div>
@@ -117,14 +150,14 @@ const HeroSlider = () => {
                 transition: 'opacity 0.3s ease-in-out'
               }}
             />
-            {/* Overlay for better text readability */}
+            {/* Overlay */}
             <div className="absolute inset-0 bg-black/20"></div>
           </div>
         ))}
       </div>
 
       {/* Navigation dots */}
-      {allImagesLoaded && (
+      {allImagesLoaded && slides.length > 1 && (
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
           {slides.map((_, index) => (
             <button

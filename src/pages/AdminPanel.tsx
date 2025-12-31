@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Trash2, Upload, Image as ImageIcon, Plus, FolderOpen, Star, Hash, X } from 'lucide-react';
+import { Loader2, Trash2, Upload, Image as ImageIcon, Plus, FolderOpen, Star, Hash, X, LogOut, Sliders, GripVertical } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { LogOut } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 interface Category {
   id: string;
@@ -55,6 +55,16 @@ interface SeoKeyword {
   created_at: string;
 }
 
+interface HeroImage {
+  id: string;
+  image_url: string;
+  title: string | null;
+  subtitle: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
 const AdminPanel = () => {
   const { user, profile, isAdmin, loading, signOut } = useAuth();
   const { toast } = useToast();
@@ -64,11 +74,14 @@ const AdminPanel = () => {
   const [projects, setProjects] = useState<GalleryProject[]>([]);
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [seoKeywords, setSeoKeywords] = useState<SeoKeyword[]>([]);
+  const [heroImages, setHeroImages] = useState<HeroImage[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [creatingProject, setCreatingProject] = useState(false);
   const [tableExists, setTableExists] = useState(true);
   const [addingKeywords, setAddingKeywords] = useState(false);
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const [heroFiles, setHeroFiles] = useState<FileList | null>(null);
 
   // Form states
   const [projectForm, setProjectForm] = useState({
@@ -136,6 +149,16 @@ const AdminPanel = () => {
 
       if (!keywordsRes.error) {
         setSeoKeywords((keywordsRes.data || []) as unknown as SeoKeyword[]);
+      }
+
+      // Fetch Hero Images
+      const heroRes = await supabase
+        .from('hero_images' as any)
+        .select('*')
+        .order('display_order');
+
+      if (!heroRes.error) {
+        setHeroImages((heroRes.data || []) as unknown as HeroImage[]);
       }
 
     } catch (error: any) {
@@ -504,6 +527,141 @@ const AdminPanel = () => {
     }
   };
 
+  // Hero Image Management Functions
+  const handleUploadHeroImages = async () => {
+    if (!heroFiles || heroFiles.length === 0) {
+      toast({
+        title: "Error",
+        description: "Please select at least one image",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setUploadingHero(true);
+    try {
+      const maxOrder = heroImages.length > 0 
+        ? Math.max(...heroImages.map(h => h.display_order)) 
+        : 0;
+
+      for (let i = 0; i < heroFiles.length; i++) {
+        const file = heroFiles[i];
+        const fileExt = file.name.split('.').pop();
+        const fileName = `hero-${Date.now()}-${i}.${fileExt}`;
+        const filePath = `hero/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('gallery')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('gallery')
+          .getPublicUrl(filePath);
+
+        const { error: insertError } = await supabase
+          .from('hero_images' as any)
+          .insert({
+            image_url: publicUrl,
+            display_order: maxOrder + i + 1,
+            is_active: true
+          });
+
+        if (insertError) throw insertError;
+      }
+
+      setHeroFiles(null);
+      const fileInput = document.getElementById('hero-file-input') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
+      
+      fetchData();
+      toast({
+        title: "Success",
+        description: `${heroFiles.length} hero image(s) uploaded successfully`
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setUploadingHero(false);
+    }
+  };
+
+  const handleDeleteHeroImage = async (heroId: string, imageUrl: string) => {
+    try {
+      // Extract path from URL for storage deletion
+      const urlParts = imageUrl.split('/gallery/');
+      if (urlParts.length > 1) {
+        const path = urlParts[1];
+        await supabase.storage.from('gallery').remove([path]);
+      }
+
+      const { error } = await supabase
+        .from('hero_images' as any)
+        .delete()
+        .eq('id', heroId);
+
+      if (error) throw error;
+
+      fetchData();
+      toast({
+        title: "Success",
+        description: "Hero image deleted successfully"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleToggleHeroActive = async (heroId: string, isActive: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('hero_images' as any)
+        .update({ is_active: !isActive })
+        .eq('id', heroId);
+
+      if (error) throw error;
+
+      fetchData();
+      toast({
+        title: "Success",
+        description: `Hero image ${!isActive ? 'activated' : 'deactivated'}`
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleUpdateHeroOrder = async (heroId: string, newOrder: number) => {
+    try {
+      const { error } = await supabase
+        .from('hero_images' as any)
+        .update({ display_order: newOrder })
+        .eq('id', heroId);
+
+      if (error) throw error;
+      fetchData();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
   if (loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -647,6 +805,118 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
 
         {tableExists && (
           <>
+            {/* Hero Images Section */}
+            <Card className="card-elegant border-primary/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sliders className="w-5 h-5" />
+                  Hero Section Images
+                </CardTitle>
+                <CardDescription>Manage hero slider images. Active images will be shown on the homepage.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Upload New Hero Images */}
+                <div className="space-y-4 p-4 bg-muted/50 rounded-lg">
+                  <Label className="text-sm font-medium">Upload New Hero Images</Label>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Input
+                      id="hero-file-input"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => setHeroFiles(e.target.files)}
+                      className="flex-1"
+                    />
+                    <Button 
+                      onClick={handleUploadHeroImages} 
+                      disabled={uploadingHero || !heroFiles}
+                      className="whitespace-nowrap"
+                    >
+                      {uploadingHero ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Plus className="w-4 h-4 mr-2" />
+                      )}
+                      Add Images
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Select one or more images. Recommended size: 1920x1080px</p>
+                </div>
+
+                {/* Existing Hero Images */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Current Hero Images ({heroImages.length})</Label>
+                  {heroImages.length === 0 ? (
+                    <div className="text-center py-8 border border-dashed rounded-lg">
+                      <ImageIcon className="w-12 h-12 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">No hero images yet. Upload some above.</p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {heroImages.map((hero, index) => (
+                        <div 
+                          key={hero.id} 
+                          className={`relative group rounded-lg overflow-hidden border-2 transition-all ${
+                            hero.is_active ? 'border-primary shadow-md' : 'border-muted opacity-60'
+                          }`}
+                        >
+                          <img 
+                            src={hero.image_url} 
+                            alt={hero.title || `Hero ${index + 1}`}
+                            className="w-full h-32 sm:h-40 object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                          
+                          {/* Order Badge */}
+                          <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                            <GripVertical className="w-3 h-3" />
+                            #{hero.display_order}
+                          </div>
+
+                          {/* Status Badge */}
+                          <div className={`absolute top-2 right-2 text-xs px-2 py-1 rounded-full ${
+                            hero.is_active ? 'bg-green-500 text-white' : 'bg-gray-500 text-white'
+                          }`}>
+                            {hero.is_active ? 'Active' : 'Inactive'}
+                          </div>
+
+                          {/* Controls */}
+                          <div className="absolute bottom-0 left-0 right-0 p-3 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Switch 
+                                checked={hero.is_active}
+                                onCheckedChange={() => handleToggleHeroActive(hero.id, hero.is_active)}
+                                className="data-[state=checked]:bg-green-500"
+                              />
+                              <span className="text-xs text-white">Active</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                type="number"
+                                min="0"
+                                value={hero.display_order}
+                                onChange={(e) => handleUpdateHeroOrder(hero.id, parseInt(e.target.value) || 0)}
+                                className="w-16 h-8 text-xs bg-white/90 text-black"
+                                placeholder="Order"
+                              />
+                              <Button
+                                variant="destructive"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() => handleDeleteHeroImage(hero.id, hero.image_url)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Create Project Section */}
             <Card className="card-elegant">
               <CardHeader>
