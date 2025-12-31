@@ -1,16 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { Tables } from '@/integrations/supabase/types';
 import gypsumCeilingImage from '../assets/hero-gypsum-ceiling.jpg';
 
-interface HeroImage {
-  id: string;
-  image_url: string;
-  title: string | null;
-  subtitle: string | null;
-  display_order: number;
-  is_active: boolean;
-}
+type HeroImage = Tables<'hero_images'>;
 
 // Fallback slides in case database is empty
 const fallbackSlides = [
@@ -33,7 +26,7 @@ const HeroSlider = () => {
     const fetchHeroImages = async () => {
       try {
         const { data, error } = await supabase
-          .from('hero_images' as any)
+          .from('hero_images')
           .select('*')
           .eq('is_active', true)
           .order('display_order');
@@ -41,10 +34,9 @@ const HeroSlider = () => {
         if (error) throw error;
 
         if (data && data.length > 0) {
-          setHeroImages(data as unknown as HeroImage[]);
+          setHeroImages(data);
           setImagesLoaded(new Array(data.length).fill(false));
         } else {
-          // Use fallback if no images in database
           setHeroImages([]);
         }
       } catch (error) {
