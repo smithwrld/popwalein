@@ -489,15 +489,17 @@ const Contact = () => {
 
             {/* Map & Service Areas */}
             <div className="space-y-8">
-              {/* Map Placeholder */}
-              <div className="card-gallery animate-scale-in">
-                <div className="bg-muted h-80 flex items-center justify-center rounded-curved-xl">
-                  <div className="text-center text-muted-foreground">
-                    <MapPin className="w-12 h-12 mx-auto mb-4 text-primary" />
-                    <h4 className="text-lg font-semibold mb-2">Find Us Here</h4>
-                    <p>Interactive map will be embedded here</p>
-                  </div>
-                </div>
+              {/* Google Maps */}
+              <div className="card-gallery animate-scale-in overflow-hidden">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d230.68719195840572!2d70.76548825140961!3d22.316026156063835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x44d1816cc4bebd65%3A0x9a855ac826fc76d0!2sP.O.P_WALE%20ceiling%20work%20agency!5e0!3m2!1sen!2sin!4v1767260804347!5m2!1sen!2sin"
+                  className="w-full h-64 sm:h-80 rounded-curved-xl"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Popwale Location - P.O.P Services Rajkot"
+                ></iframe>
               </div>
 
               {/* Service Areas */}
