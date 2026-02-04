@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Globe, FileText, Instagram, Facebook, Phone, MapPin, Mail } from "lucide-react";
+import { ArrowLeft, Globe, FileText, Instagram, Facebook, Phone, MapPin, Mail, Youtube } from "lucide-react";
 import { Link } from "react-router-dom";
 import popwaleLogo from "@/assets/popwale-mascot-logo.png";
 
@@ -7,8 +7,8 @@ const Card = () => {
   const contactLinks = [
     {
       icon: Phone,
-      label: "+91 98985 15888",
-      href: "tel:+919898515888",
+      label: "+91 99090 94033",
+      href: "tel:+919909094033",
     },
     {
       icon: Mail,
@@ -17,8 +17,14 @@ const Card = () => {
     },
     {
       icon: Instagram,
-      label: "@popwale.in",
-      href: "https://instagram.com/popwale.in",
+      label: "@popwale_in",
+      href: "https://www.instagram.com/popwale_in/",
+      external: true
+    },
+    {
+      icon: Youtube,
+      label: "YouTube",
+      href: "https://www.youtube.com/channel/UC8lyfQ9Mc4fDzK0dW68TPxg",
       external: true
     },
     {
@@ -36,13 +42,13 @@ const Card = () => {
     {
       icon: Facebook,
       label: "Popwale | Rajkot",
-      href: "https://facebook.com/popwale.in",
+      href: "https://www.facebook.com/popwale.in/",
       external: true
     },
     {
       icon: MapPin,
-      label: "Rajkot, Gujarat",
-      href: "https://maps.google.com/?q=Popwale+Rajkot",
+      label: "150 Feet Ring Rd, Rajkot",
+      href: "https://maps.google.com/?q=150+Feet+Ring+Rd+near+The+spire+Sheetal+Park+Shastri+Nagar+Dharam+Nagar+Rajkot+Gujarat+360007",
       external: true
     }
   ];
