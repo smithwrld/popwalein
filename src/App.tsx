@@ -17,7 +17,7 @@ import GridCeiling from "./pages/services/GridCeiling";
 import SoffitCeiling from "./pages/services/SoffitCeiling";
 import StretchCeiling from "./pages/services/StretchCeiling";
 import PunningWork from "./pages/services/PunningWork";
-
+import Card from "./pages/Card";
 
 import Quotation from "./pages/Quotation";
 import Gallery from "./pages/Gallery";
@@ -34,6 +34,7 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const location = useLocation();
   const isAdminPanel = location.pathname === '/admin';
+  const isCardPage = location.pathname === '/card';
 
   return (
     <>
@@ -42,6 +43,11 @@ const AppContent = () => {
         // Admin panel without navigation and footer
         <Routes>
           <Route path="/admin" element={<AdminPanel />} />
+        </Routes>
+      ) : isCardPage ? (
+        // Card page without navigation and footer (standalone digital business card)
+        <Routes>
+          <Route path="/card" element={<Card />} />
         </Routes>
       ) : (
         // Regular app with navigation and footer
