@@ -1,14 +1,25 @@
 import { Helmet } from "react-helmet-async";
-import { User, Globe, FileText, Instagram, Facebook, Phone, MapPin, Mail } from "lucide-react";
-import popwaleLogo from "@/assets/popwale-logo.png";
+import { ArrowLeft, Globe, FileText, Instagram, Facebook, Phone, MapPin, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
+import popwaleLogo from "@/assets/popwale-mascot-logo.png";
 
 const Card = () => {
   const contactLinks = [
     {
-      icon: User,
-      label: "Contact Info",
-      href: "tel:+919898aborana",
-      action: "contact"
+      icon: Phone,
+      label: "+91 98985 15888",
+      href: "tel:+919898515888",
+    },
+    {
+      icon: Mail,
+      label: "info@popwale.in",
+      href: "mailto:info@popwale.in",
+    },
+    {
+      icon: Instagram,
+      label: "@popwale.in",
+      href: "https://instagram.com/popwale.in",
+      external: true
     },
     {
       icon: Globe,
@@ -23,26 +34,10 @@ const Card = () => {
       external: true
     },
     {
-      icon: Instagram,
-      label: "Instagram",
-      href: "https://instagram.com/popwale.in",
-      external: true
-    },
-    {
       icon: Facebook,
       label: "Popwale | Rajkot",
       href: "https://facebook.com/popwale.in",
       external: true
-    },
-    {
-      icon: Phone,
-      label: "+91 98985 15888",
-      href: "tel:+919898515888",
-    },
-    {
-      icon: Mail,
-      label: "info@popwale.in",
-      href: "mailto:info@popwale.in",
     },
     {
       icon: MapPin,
@@ -61,17 +56,26 @@ const Card = () => {
 
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="w-full max-w-[420px] bg-white rounded-[20px] py-8 px-6">
+          {/* Back Button */}
+          <Link 
+            to="/" 
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-6"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="text-sm font-medium">Back to Website</span>
+          </Link>
+
           {/* Header Section */}
           <header className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <img 
                 src={popwaleLogo} 
                 alt="Popwale Logo" 
-                className="w-28 h-auto"
+                className="w-40 h-auto"
               />
             </div>
             <h1 className="text-[22px] font-semibold text-primary tracking-tight">
-              Popwale
+              P.O.P Wale
             </h1>
             <p className="text-sm text-primary/70 mt-1">
               Premium P.O.P & Ceiling Services
