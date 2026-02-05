@@ -2,6 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { ArrowLeft, Globe, FileText, Instagram, Facebook, Phone, MapPin, Mail, Youtube } from "lucide-react";
 import { Link } from "react-router-dom";
 import popwaleLogo from "@/assets/popwale-mascot-logo.png";
+import gyprocLogo from "@/assets/gyproc-logo.png";
 
 const Card = () => {
   const contactLinks = [
@@ -72,18 +73,37 @@ const Card = () => {
           </Link>
 
           {/* Header Section */}
-          <header className="text-center mb-8">
-            <div className="flex justify-center mb-4">
+          <header className="mb-8">
+            {/* Three Column Layout */}
+            <div className="flex items-center justify-between gap-2 mb-4">
+              {/* Left - Service Text */}
+              <div className="flex-1 text-left">
+                <p className="text-xs font-semibold text-primary leading-tight">Ceiling Work Agency</p>
+                <p className="text-[10px] text-primary/70 leading-tight">All types of ceiling work</p>
+              </div>
+              
+              {/* Center - Popwale Logo */}
               <img 
                 src={popwaleLogo} 
                 alt="Popwale Logo" 
-                className="w-40 h-auto"
+                className="w-24 h-auto flex-shrink-0"
               />
+              
+              {/* Right - Gyproc Branding */}
+              <div className="flex-1 text-right">
+                <p className="text-[8px] font-bold text-primary/80 leading-tight uppercase tracking-wide">Authorized Franchiser</p>
+                <img 
+                  src={gyprocLogo} 
+                  alt="Gyproc by Saint-Gobain" 
+                  className="h-6 w-auto ml-auto mt-1"
+                />
+              </div>
             </div>
-            <h1 className="text-[22px] font-semibold text-primary tracking-tight">
+            
+            <h1 className="text-[22px] font-semibold text-primary tracking-tight text-center">
               P.O.P Wale
             </h1>
-            <p className="text-sm text-primary/70 mt-1">
+            <p className="text-sm text-primary/70 mt-1 text-center">
               Premium P.O.P & Ceiling Services
             </p>
           </header>
