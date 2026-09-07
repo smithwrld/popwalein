@@ -84,9 +84,9 @@ export default {
 				'gradient-card': 'var(--gradient-card)'
 			},
 			fontFamily: {
-				sans: ['Inter', 'system-ui', 'sans-serif'],
-				serif: ['Playfair Display', 'serif'],
-				elegant: ['Playfair Display', 'serif']
+				sans: ['Neue Haas', 'system-ui', 'sans-serif'],
+				serif: ['Neue Haas', 'system-ui', 'sans-serif'],
+				elegant: ['Neue Haas', 'system-ui', 'sans-serif']
 			},
 			keyframes: {
 				'accordion-down': {

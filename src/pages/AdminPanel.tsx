@@ -5,12 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Trash2, Upload, Image as ImageIcon, Plus, FolderOpen, Star, Hash, X, LogOut, Sliders, GripVertical } from 'lucide-react';
+import { Loader2, Trash2, Upload, Image as ImageIcon, Plus, FolderOpen, Star, Hash, X, LogOut, Sliders, GripVertical, Layers, FileText } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { QuotationServiceManager } from '@/components/admin/QuotationServiceManager';
+import { QuotationInquiriesViewer } from '@/components/admin/QuotationInquiriesViewer';
+import { TermsConditionsManager } from '@/components/admin/TermsConditionsManager';
 
 interface Category {
   id: string;
@@ -694,8 +698,53 @@ const AdminPanel = () => {
           </div>
         </div>
       </div>
-
       <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-8">
+        <Tabs defaultValue="quotation-catalog" className="w-full space-y-6">
+          <div className="overflow-x-auto pb-2">
+            <TabsList className="bg-card border border-border p-1.5 rounded-2xl h-auto gap-1">
+              <TabsTrigger
+                value="quotation-catalog"
+                className="rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
+              >
+                <Layers className="w-4 h-4" />
+                Quotation Catalog
+              </TabsTrigger>
+              <TabsTrigger
+                value="quotation-inquiries"
+                className="rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
+              >
+                <FileText className="w-4 h-4" />
+                Quotation Inquiries
+              </TabsTrigger>
+              <TabsTrigger
+                value="gallery-hero"
+                className="rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
+              >
+                <ImageIcon className="w-4 h-4" />
+                Gallery & Hero Images
+              </TabsTrigger>
+              <TabsTrigger
+                value="terms-conditions"
+                className="rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
+              >
+                <FileText className="w-4 h-4" />
+                Terms & Conditions
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          {/* Tab 1: Quotation Catalog */}
+          <TabsContent value="quotation-catalog" className="space-y-6 focus-visible:outline-none">
+            <QuotationServiceManager />
+          </TabsContent>
+
+          {/* Tab 2: Quotation Inquiries */}
+          <TabsContent value="quotation-inquiries" className="space-y-6 focus-visible:outline-none">
+            <QuotationInquiriesViewer />
+          </TabsContent>
+
+          {/* Tab 3: Gallery & Hero Images */}
+          <TabsContent value="gallery-hero" className="space-y-8 focus-visible:outline-none">
 
         {/* Setup Warning */}
         {!tableExists && (
@@ -1336,9 +1385,16 @@ FOR SELECT TO authenticated USING (user_id = auth.uid());`}
             </div>
           </>
         )}
-      </div>
-    </div>
-  );
+      </TabsContent>
+
+      {/* Tab 4: Terms & Conditions Manager */}
+      <TabsContent value="terms-conditions" className="space-y-6 focus-visible:outline-none">
+        <TermsConditionsManager />
+      </TabsContent>
+    </Tabs>
+  </div>
+</div>
+);
 };
 
 export default AdminPanel;

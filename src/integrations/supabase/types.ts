@@ -326,6 +326,332 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image: string | null
+          is_active: boolean
+          name: string
+          slug: string
+          sort_order: number
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name: string
+          slug: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name?: string
+          slug?: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image: string | null
+          is_active: boolean
+          name: string
+          service_id: string
+          slug: string
+          sort_order: number
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name: string
+          service_id: string
+          slug: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name?: string
+          service_id?: string
+          slug?: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_categories_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      service_parameters: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          is_required: boolean
+          name: string
+          service_id: string
+          slug: string
+          sort_order: number
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_required?: boolean
+          name: string
+          service_id: string
+          slug: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_required?: boolean
+          name?: string
+          service_id?: string
+          slug?: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_parameters_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_parameters_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      parameter_products: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image: string | null
+          is_active: boolean
+          name: string
+          parameter_id: string
+          slug: string
+          sort_order: number
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name: string
+          parameter_id: string
+          slug: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image?: string | null
+          is_active?: boolean
+          name?: string
+          parameter_id?: string
+          slug?: string
+          sort_order?: number
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parameter_products_parameter_id_fkey"
+            columns: ["parameter_id"]
+            isOneToOne: false
+            referencedRelation: "service_parameters"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      quotations: {
+        Row: {
+          area_sqft: string | null
+          category_name_snapshot: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          description: string | null
+          id: string
+          notes: string | null
+          project_location: string
+          project_type: string | null
+          quotation_number: string
+          service_category_id: string | null
+          service_id: string | null
+          service_name_snapshot: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          area_sqft?: string | null
+          category_name_snapshot?: string | null
+          created_at?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          description?: string | null
+          id?: string
+          notes?: string | null
+          project_location: string
+          project_type?: string | null
+          quotation_number: string
+          service_category_id?: string | null
+          service_id?: string | null
+          service_name_snapshot?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          area_sqft?: string | null
+          category_name_snapshot?: string | null
+          created_at?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          description?: string | null
+          id?: string
+          notes?: string | null
+          project_location?: string
+          project_type?: string | null
+          quotation_number?: string
+          service_category_id?: string | null
+          service_id?: string | null
+          service_name_snapshot?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotations_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotations_service_category_id_fkey"
+            columns: ["service_category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      quotation_selections: {
+        Row: {
+          created_at: string
+          id: string
+          parameter_id: string | null
+          parameter_name_snapshot: string
+          product_id: string | null
+          product_name_snapshot: string
+          quotation_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          parameter_id?: string | null
+          parameter_name_snapshot: string
+          product_id?: string | null
+          product_name_snapshot: string
+          quotation_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          parameter_id?: string | null
+          parameter_name_snapshot?: string
+          product_id?: string | null
+          product_name_snapshot?: string
+          quotation_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quotation_selections_quotation_id_fkey"
+            columns: ["quotation_id"]
+            isOneToOne: false
+            referencedRelation: "quotations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotation_selections_parameter_id_fkey"
+            columns: ["parameter_id"]
+            isOneToOne: false
+            referencedRelation: "service_parameters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotation_selections_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "parameter_products"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never

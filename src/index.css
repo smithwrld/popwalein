@@ -1,3 +1,52 @@
+@font-face {
+  font-family: 'Neue Haas';
+  src: url('/neue-haas-roman.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Haas';
+  src: url('/neue-haas-light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Map other font-weight requests to Roman to avoid artificial browser bolding */
+@font-face {
+  font-family: 'Neue Haas';
+  src: url('/neue-haas-roman.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Haas';
+  src: url('/neue-haas-roman.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Haas';
+  src: url('/neue-haas-roman.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Haas';
+  src: url('/neue-haas-roman.otf') format('opentype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -125,10 +174,44 @@
     margin: 0;
     padding: 0;
     scroll-behavior: smooth;
+    font-family: 'Neue Haas', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 300; /* Set Neue Haas Light as base weight for premium look */
+    letter-spacing: -0.01em; /* Premium typography spacing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     min-height: 100vh;
+  }
+
+  /* Reset headings and ensure no bold is used */
+  h1, h2, h3, h4, h5, h6, th, strong, b,
+  .font-medium, .font-semibold, .font-bold, .font-extrabold {
+    font-weight: 400 !important; /* Force Roman weight instead of bold */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em !important;
+  }
+
+  /* Responsive typography safety adjustments for mobile viewport sizes */
+  @media (max-width: 640px) {
+    h1 {
+      font-size: clamp(1.85rem, 8vw, 2.5rem) !important;
+      line-height: 1.15 !important;
+    }
+    h2 {
+      font-size: clamp(1.5rem, 6vw, 1.9rem) !important;
+      line-height: 1.2 !important;
+    }
+    h3 {
+      font-size: clamp(1.2rem, 5vw, 1.45rem) !important;
+      line-height: 1.25 !important;
+    }
+    body {
+      letter-spacing: -0.005em !important;
+    }
   }
 }
 
