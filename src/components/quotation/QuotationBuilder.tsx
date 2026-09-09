@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { QuotationProgressBar, StepItem } from './QuotationProgressBar';
-import { StepProjectDetails, ProjectDetailsData } from './StepProjectDetails';
+import { ProjectDetailsData } from './StepProjectDetails';
 import { StepServiceSelect } from './StepServiceSelect';
 import { StepParametersSelect } from './StepParametersSelect';
 import { StepReviewSubmit } from './StepReviewSubmit';
@@ -111,17 +111,16 @@ export const QuotationBuilder: React.FC = () => {
     loadParameters();
   }, [selectedService]);
 
-  // Dynamic step configuration calculation (No category step)
+  // Dynamic step configuration: 1. Service -> 2. Specifications -> 3. Details & Review (Final Step)
   const dynamicSteps: StepItem[] = useMemo(() => {
     return [
-      { id: 'details', title: 'Project Details', shortLabel: 'Details' },
       { id: 'service', title: 'Select Service', shortLabel: 'Service' },
       { id: 'requirements', title: 'Specifications', shortLabel: 'Specs' },
-      { id: 'review', title: 'Review & Submit', shortLabel: 'Review' },
+      { id: 'review', title: 'Details & Review', shortLabel: 'Review' },
     ];
   }, []);
 
-  const currentStepId = dynamicSteps[currentStepIndex]?.id || 'details';
+  const currentStepId = dynamicSteps[currentStepIndex]?.id || 'service';
 
   // Handle Project Details input change
   const handleProjectDetailsChange = (field: keyof ProjectDetailsData, value: string) => {
@@ -147,7 +146,13 @@ export const QuotationBuilder: React.FC = () => {
   // Step Validation Check
   const isCurrentStepValid = useMemo(() => {
     switch (currentStepId) {
-      case 'details':
+      case 'service':
+        return Boolean(selectedService);
+      case 'requirements':
+        return parameters
+          .filter((p) => p.is_required)
+          .every((p) => Boolean(selectedProducts[p.id]));
+      case 'review':
         return Boolean(
           projectDetails.name.trim() &&
             projectDetails.email.trim() &&
@@ -156,18 +161,10 @@ export const QuotationBuilder: React.FC = () => {
             projectDetails.area.trim() &&
             parseFloat(projectDetails.area) > 0
         );
-      case 'service':
-        return Boolean(selectedService);
-      case 'requirements':
-        return parameters
-          .filter((p) => p.is_required)
-          .every((p) => Boolean(selectedProducts[p.id]));
-      case 'review':
-        return true;
       default:
         return false;
     }
-  }, [currentStepId, projectDetails, selectedService, parameters, selectedProducts]);
+  }, [currentStepId, selectedService, parameters, selectedProducts, projectDetails]);
 
   // Step Navigation Handlers
   const handleNextStep = () => {
@@ -202,7 +199,30 @@ export const QuotationBuilder: React.FC = () => {
 
   // Final Quotation Submission
   const handleSubmitQuotation = async () => {
-    if (!selectedService) return;
+    if (!selectedService) {
+      toast({
+        title: 'Please select a service',
+        description: 'Choose a primary ceiling service before submitting.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (
+      !projectDetails.name.trim() ||
+      !projectDetails.email.trim() ||
+      !projectDetails.phone.trim() ||
+      !projectDetails.location.trim() ||
+      !projectDetails.area.trim() ||
+      parseFloat(projectDetails.area) <= 0
+    ) {
+      toast({
+        title: 'Please complete required fields',
+        description: 'Name, email, phone, location, and a valid area (sq.ft) are required to generate your quotation.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -340,15 +360,7 @@ ${requirementsText || 'Standard Inclusions'}
 
       {/* Main Parent Layout (28px Border Radius) */}
       <div className="bg-gradient-to-br from-card to-muted/40 border border-border rounded-[28px] p-5 sm:p-8 shadow-lg shadow-black/[0.03] relative overflow-hidden transition-all duration-300">
-        {/* Step 1: Project Details */}
-        {currentStepId === 'details' && (
-          <StepProjectDetails
-            data={projectDetails}
-            onChange={handleProjectDetailsChange}
-          />
-        )}
-
-        {/* Step 2: Select Service (Grid of 2) */}
+        {/* Step 1: Select Service (Grid of 2) */}
         {currentStepId === 'service' && (
           <StepServiceSelect
             services={services}
@@ -358,7 +370,7 @@ ${requirementsText || 'Standard Inclusions'}
           />
         )}
 
-        {/* Step 3: Select Parameters / Products (Grid of 2) */}
+        {/* Step 2: Select Specifications / Materials (Grid of 2) */}
         {currentStepId === 'requirements' && (
           <StepParametersSelect
             parameters={parameters}
@@ -368,10 +380,11 @@ ${requirementsText || 'Standard Inclusions'}
           />
         )}
 
-        {/* Step 4: Review & Submit */}
+        {/* Step 3 (Final Step): Details & Quotation Review */}
         {currentStepId === 'review' && (
           <StepReviewSubmit
             projectDetails={projectDetails}
+            onProjectDetailsChange={handleProjectDetailsChange}
             service={selectedService}
             parameters={parameters}
             selectedProducts={selectedProducts}

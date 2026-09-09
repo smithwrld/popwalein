@@ -18,19 +18,23 @@ export interface ProjectDetailsData {
 interface StepProjectDetailsProps {
   data: ProjectDetailsData;
   onChange: (field: keyof ProjectDetailsData, value: string) => void;
+  hideHeader?: boolean;
 }
 
 export const StepProjectDetails: React.FC<StepProjectDetailsProps> = ({
   data,
   onChange,
+  hideHeader = false,
 }) => {
   return (
     <div className="space-y-5 animate-fade-up">
-      <div className="text-left mb-4">
-        <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
-          Project & Contact Details
-        </h2>
-      </div>
+      {!hideHeader && (
+        <div className="text-left mb-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
+            Project & Contact Details
+          </h2>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Full Name */}

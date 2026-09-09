@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
-import { ProjectDetailsData } from './StepProjectDetails';
+import { StepProjectDetails, ProjectDetailsData } from './StepProjectDetails';
 import {
   QuotationService,
   ServiceParameter,
@@ -36,6 +36,7 @@ interface SelectedProductDetail {
 
 interface StepReviewSubmitProps {
   projectDetails: ProjectDetailsData;
+  onProjectDetailsChange: (field: keyof ProjectDetailsData, value: string) => void;
   service: QuotationService | null;
   parameters: ServiceParameter[];
   selectedProducts: Record<string, string>; // parameterId -> productId
@@ -53,6 +54,7 @@ interface StepReviewSubmitProps {
 
 export const StepReviewSubmit: React.FC<StepReviewSubmitProps> = ({
   projectDetails,
+  onProjectDetailsChange,
   service,
   parameters,
   selectedProducts,
@@ -264,65 +266,31 @@ export const StepReviewSubmit: React.FC<StepReviewSubmitProps> = ({
     <div className="space-y-5 animate-fade-up">
       <div className="text-left mb-4">
         <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
-          Review Your Quotation
+          Your Details & Quotation Review
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-          Please verify your project details and specifications before final submission.
+          Enter your contact and project details below to calculate your live estimate and receive your formal quotation.
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-4">
-        {/* Customer Details Card */}
+        {/* Customer & Project Details Form (Asked in the Final Step) */}
         <div className="bg-card rounded-[28px] p-5 sm:p-6 border border-border/80 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between pb-3 mb-3.5 border-b border-border/50">
+          <div className="flex items-center justify-between pb-3 mb-4 border-b border-border/50">
             <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
               <User className="w-4 h-4 text-primary" />
               Project & Contact Information
             </h3>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onEditStep(0)}
-              className="h-7 text-xs text-primary hover:text-primary hover:bg-primary/10 rounded-full gap-1 font-semibold px-3"
-            >
-              <Edit2 className="w-3 h-3" />
-              Edit
-            </Button>
+            <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
+              Final Step
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs sm:text-sm">
-            <div className="p-3 bg-muted/25 rounded-[20px] border border-border/40">
-              <span className="text-[11px] text-muted-foreground block">Customer Name</span>
-              <span className="font-semibold text-foreground">{projectDetails.name || '—'}</span>
-            </div>
-            <div className="p-3 bg-muted/25 rounded-[20px] border border-border/40">
-              <span className="text-[11px] text-muted-foreground block">Email Address</span>
-              <span className="font-semibold text-foreground truncate block">{projectDetails.email || '—'}</span>
-            </div>
-            <div className="p-3 bg-muted/25 rounded-[20px] border border-border/40">
-              <span className="text-[11px] text-muted-foreground block">Phone Number</span>
-              <span className="font-semibold text-foreground">{projectDetails.phone || '—'}</span>
-            </div>
-            <div className="p-3 bg-muted/25 rounded-[20px] border border-border/40">
-              <span className="text-[11px] text-muted-foreground block">Project Location</span>
-              <span className="font-semibold text-foreground">{projectDetails.location || '—'}</span>
-            </div>
-            <div className="p-3 bg-muted/25 rounded-[20px] border border-border/40">
-              <span className="text-[11px] text-muted-foreground block">Space Type</span>
-              <span className="font-semibold text-foreground capitalize">{projectDetails.projectType || 'Not specified'}</span>
-            </div>
-            <div className="p-3 bg-muted/25 rounded-[20px] border border-border/40">
-              <span className="text-[11px] text-muted-foreground block">Estimated Area</span>
-              <span className="font-semibold text-foreground">{projectDetails.area ? `${projectDetails.area} sq.ft` : 'Not specified'}</span>
-            </div>
-          </div>
-
-          {projectDetails.description && (
-            <div className="mt-3 pt-2.5 border-t border-border/40 text-xs text-muted-foreground">
-              <span className="font-semibold text-foreground block mb-0.5">Notes:</span>
-              <p className="italic">{projectDetails.description}</p>
-            </div>
-          )}
+          <StepProjectDetails
+            data={projectDetails}
+            onChange={onProjectDetailsChange}
+            hideHeader
+          />
         </div>
 
         {/* Selected Service Card */}
@@ -335,11 +303,11 @@ export const StepReviewSubmit: React.FC<StepReviewSubmitProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onEditStep(1)}
+              onClick={() => onEditStep(0)}
               className="h-7 text-xs text-primary hover:text-primary hover:bg-primary/10 rounded-full gap-1 font-semibold px-3"
             >
               <Edit2 className="w-3 h-3" />
-              Edit
+              Change Service
             </Button>
           </div>
 
@@ -373,11 +341,11 @@ export const StepReviewSubmit: React.FC<StepReviewSubmitProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onEditStep(2)}
+              onClick={() => onEditStep(1)}
               className="h-7 text-xs text-primary hover:text-primary hover:bg-primary/10 rounded-full gap-1 font-semibold px-3"
             >
               <Edit2 className="w-3 h-3" />
-              Edit
+              Change Specs
             </Button>
           </div>
 
@@ -417,12 +385,19 @@ export const StepReviewSubmit: React.FC<StepReviewSubmitProps> = ({
           <div className="flex items-center justify-between pb-3 border-b border-border/50">
             <h3 className="text-sm sm:text-base font-bold text-foreground flex items-center gap-2">
               <Calculator className="w-4 h-4 text-primary" />
-              Itemized Quotation Breakdown ({breakdown.areaSqft} sq.ft)
+              Itemized Quotation Breakdown {breakdown.areaSqft > 0 ? `(${breakdown.areaSqft} sq.ft)` : ''}
             </h3>
             <span className="text-xs font-semibold text-muted-foreground">
               Rate × Total Area
             </span>
           </div>
+
+          {breakdown.areaSqft <= 0 && (
+            <div className="p-3.5 rounded-[20px] bg-primary/5 border border-primary/20 flex items-center gap-2.5 text-xs text-primary font-medium">
+              <Sparkles className="w-4 h-4 shrink-0 text-primary" />
+              <span>Enter your approximate room / ceiling area (sq.ft) in the form above to see the calculated estimate in real-time.</span>
+            </div>
+          )}
 
           {/* Mobile View: Clean Stacked Cards (NO horizontal slide/sidebar, 100% natural mobile reading flow) */}
           <div className="block md:hidden space-y-2.5">
